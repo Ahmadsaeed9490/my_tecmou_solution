@@ -15,6 +15,7 @@
         <table class="table table-bordered align-middle">
             <thead class="table-light">
                 <tr>
+                    <th>#</th>
                     <th>Logo</th>
                     <th>Name</th>
                     <th>Slug</th>
@@ -27,6 +28,7 @@
             <tbody>
                 @foreach ($brands as $brand)
                 <tr>
+                      <td>{{ $brand->id }}</td>
                     <td>
                         @if($brand->logo)
                             <img src="{{ asset('storage/' . $brand->logo) }}" alt="Logo" width="40" height="40">
@@ -38,7 +40,7 @@
                     <td>{{ $brand->slug }}</td>
                     <td><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></td>
                     <td>
-                        <span class="badge bg-{{ $brand->status ? 'success' : 'secondary' }}">
+                        <span class="badge bg-{{ $brand->status ? 'success' : 'danger' }}">
                             {{ $brand->status ? 'Active' : 'Inactive' }}
                         </span>
                     </td>
@@ -95,24 +97,6 @@
         <button type="submit" class="btn btn-primary">Update Brand</button>
       </div>
     </form>
-{{-- <form method="POST" action="{{ route('admin.brands.update', $brand->id) }}">
-    @csrf
-    @method('PUT')
-
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Brand</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body row g-3">
-        @include('admin.brands.partials.edit-brand-modal')
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Update Brand</button>
-      </div>
-    </form>
-  </div>
-</div> --}}
-
 @endsection
 
 @push('scripts')

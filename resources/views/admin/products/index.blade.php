@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('content')
-    <div class="content">
+    {{-- <div class="content">
         <div class="container-fluid pt-4 px-4 mb-5">
             <div class="border-bottom">
                 <h3 class="text-center pb-2 mb-0">All Products</h3>
@@ -71,8 +71,64 @@
                 </div>
             </div>
         </div>
+    </div> --}}
+<div class="container-fluid pt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>All Products</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBrandModal">All Products</button>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <div class="table-responsive bg-white p-3 rounded shadow-sm">
+        <table class="table table-bordered align-middle">
+             <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>SKU</th>
+                                <th>Model</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+                                <th>Discount</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+             </thead>
+              <tbody id="product-table">
+                            @foreach($products as $product)
+                                <tr id="product-{{ $product->id }}">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $product->name }}</td>
+                                    <td>{{ $product->slug }}</td>
+                                     <td>
+                                        <span class="badge bg-{{ $product->status ? 'success' : 'danger' }}">
+                                            {{ $brand->status ? 'Active' : 'Inactive' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $product->sku }}</td>
+                                    <td>{{ $product->model }}</td>
+                                    <td>{{ $product->category->name ?? 'N/A' }}</td>
+                                    <td>{{ $product->brand->name ?? 'N/A' }}</td>
+                                    <td>{{ $product->price }}</td>
+                                    <td>{{ $product->discount }}</td>
+                                    <td>{{ $product->stock_quantity }}</td>
+                                    <td>{{ $product->status == 'active' ? 'Active' : 'Inactive' }}</td>
+                                    <td>
+                                        <button onclick="editProduct({{ $product->id }})" class="btn btn-sm btn-info">Edit</button>
+                                        <button onclick="deleteProduct({{ $product->id }})" class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+        </table>
+    </div>
+</div>
     <!-- Create Modal -->
     <div class="modal fade" id="createProductModal" tabindex="-1">
         <div class="modal-dialog modal-lg">

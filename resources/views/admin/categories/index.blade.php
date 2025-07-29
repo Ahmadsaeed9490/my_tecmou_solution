@@ -1,61 +1,48 @@
 @extends('layout.master')
 @section('content')
-<div class="content">
-  <div class="container-fluid pt-4 px-4 mb-5">
-    <div class="border-bottom">
-      <h3 class="text-center pb-2 mb-0">All Categories</h3>
+
+<div class="container-fluid pt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>All Categories</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_category_Modal">Add Category</button>
     </div>
 
-    <div class="card mt-4 border-0 rounded-3 shadow-sm">
-      <div class="card-header bg-white border-0 rounded-3">
-        <div class="row my-3">
-          <div class="col-md-4 col-12">
-            <div class="input-search position-relative">
-              <input type="text" placeholder="Search Category" id="search-input" class="form-control rounded-3" />
-              <span class="fa fa-search search-icon text-secondary"></span>
-            </div>
-          </div>
-          <div class="col-md-6 text-center">
-            @if (session('success'))
-              <div class="alert alert-success" id="success-alert">
-                {{ session('success') }}
-              </div>
-            @endif
-          </div>
-          <div class="col-md-2 text-end">
-            <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#add_category_Modal">
-              Create <i class="bi bi-plus-lg"></i>
-            </button>
-          </div>
-        </div>
-      </div>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-      <div class="table-responsive p-2">
-        <table class="table" id="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Slug</th>
-              <th>Description</th>
-              <th>Image</th>
-              <th>Status</th>
-              <th>Sort Order</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+    <div class="table-responsive bg-white p-3 rounded shadow-sm">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Slug</th>
+                      <th>Description</th>
+                      <th>Image</th>
+                      <th>Status</th>
+                      <th>Sort Order</th>
+                      <th>Actions</th>
+                </tr>
+            </thead>
+           <tbody>
             @foreach ($categories as $category)
               <tr class="category-row">
                 <td>{{ $category->id }}</td>
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->slug }}</td>
                 <td>{{ \Illuminate\Support\Str::limit($category->description, 50) }}</td>
-                <td>
-                  @if($category->image)
-                    <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="40">
-                  @endif
-                </td>
+                 <td>
+                        <span class="badge bg-{{ $category->status ? 'success' : 'danger' }}">
+                            {{ $category->status ? 'Active' : 'Inactive' }}
+                        </span>
+                    </td>
+                      <td>
+                        @if($category->image)
+                          <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="40">
+                        @endif
+                      </td>
+
                 <td>{{ $category->status ? 'Active' : 'Inactive' }}</td>
                 <td>{{ $category->sort_order }}</td>
                 <td>
@@ -66,9 +53,7 @@
             @endforeach
           </tbody>
         </table>
-      </div>
     </div>
-  </div>
 </div>
 
 <!-- Add Category Modal -->
@@ -111,8 +96,6 @@
     </form>
   </div>
 </div>
-
-
 
 <!-- Delete Modal -->
 <div class="modal fade" id="delete_category_Modal" tabindex="-1">
