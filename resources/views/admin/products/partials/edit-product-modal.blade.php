@@ -1,14 +1,14 @@
 <input type="hidden" name="id" id="edit-id">
 
         <div class="col-md-6">
-  <label>Name</label>
-  <input type="text" name="name" id="edit-name" class="form-control">
-</div>
+          <label>Name</label>
+          <input type="text" name="name" id="edit-name" class="form-control" value="{{ $product->name ?? '' }}">
+        </div>
 
-<div class="col-md-6">
-  <label>Slug</label>
-  <input type="text" name="slug" id="edit-slug" class="form-control">
-</div>
+        <div class="col-md-6">
+          <label>Slug</label>
+          <input type="text" name="slug" id="edit-slug" class="form-control" value="{{ $product->slug ?? '' }}">
+        </div>
 
           <div class="col-md-6">
             <label>Category</label>
