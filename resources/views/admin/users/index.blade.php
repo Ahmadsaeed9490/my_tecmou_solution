@@ -69,7 +69,7 @@
     <div class="modal-dialog modal-lg">
         <form method="POST" action="{{ route('admin.users.update', $user->id) }}" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
+            @method('POST')
 
             <div class="modal-content">
                 <div class="modal-header">
