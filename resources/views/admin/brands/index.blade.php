@@ -95,23 +95,6 @@
         <button type="submit" class="btn btn-primary">Update Brand</button>
       </div>
     </form>
-{{-- <form method="POST" action="{{ route('admin.brands.update', $brand->id) }}">
-    @csrf
-    @method('PUT')
-
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Brand</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body row g-3">
-        @include('admin.brands.partials.edit-brand-modal')
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Update Brand</button>
-      </div>
-    </form>
-  </div>
-</div> --}}
 
 @endsection
 

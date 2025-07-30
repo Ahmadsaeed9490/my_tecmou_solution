@@ -48,13 +48,17 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', [ProductController::class, 'update'])->name('update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
     });
+Route::prefix('admin')->group(function () {
+    Route::post('/users/toggle-status', [userController::class, 'toggleStatus'])->name('users.toggleStatus');
+});
 
-    Route::prefix('admin/users')->name('admin.users.')->group(function () {
-        Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::post('/store', [UserController::class, 'store'])->name('store');
-        Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
-        Route::delete('/delete/{id}', [UserController::class, 'destroy'])->name('delete');
-    });
+Route::prefix('admin/users')->name('admin.users.')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('index');
+    
+    Route::post('/store', [UserController::class, 'store'])->name('store');
+    Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy'); // ✅ Corrected
+});
 });
 
 require __DIR__ . '/auth.php';
