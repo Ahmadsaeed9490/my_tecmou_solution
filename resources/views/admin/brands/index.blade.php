@@ -81,9 +81,10 @@
 <!-- Edit Modal -->
 <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form id="editBrandForm" enctype="multipart/form-data" class="modal-content">
-      @csrf
-      @method('PUT')
+<form id="editBrandForm" method="POST" enctype="multipart/form-data" class="modal-content">
+    
+    @csrf
+    @method('PUT')
 
       <!-- The form will be populated via AJAX -->
       <div class="modal-header">
@@ -97,34 +98,80 @@
         <button type="submit" class="btn btn-primary">Update Brand</button>
       </div>
     </form>
+  </div>
+</div>
 @endsection
-
 @push('scripts')
 <script>
-   $('.editBrandBtn').on('click', function () {
-    const id = $(this).data('id');
-    
-    $.ajax({
-        url: '/admin/brands/' + id + '/edit',
-        type: 'GET',
-        success: function (brand) {
-          $('#editBrandForm').attr('action', '/admin/brands/' + brand.id);
-            $('#editBrandForm input[name="name"]').val(brand.name);
-            $('#editBrandForm input[name="slug"]').val(brand.slug);
-            $('#editBrandForm textarea[name="description"]').val(brand.description);
-            $('#editBrandForm input[name="website"]').val(brand.website);
-            $('#editBrandForm select[name="status"]').val(brand.status);
-            $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
+$(document).ready(function () {
+    // Edit button click
+    $('.editBrandBtn').on('click', function () {
+        const id = $(this).data('id');
 
-            // Optional: show logo preview
-            if (brand.logo) {
-                $('#editBrandLogoPreview').attr('src', '/storage/' + brand.logo).show();
+        $.ajax({
+            url: '/admin/brands/' + id + '/edit',
+            type: 'GET',
+            success: function (brand) {
+                if (!brand.id) {
+                    console.error("No ID returned in response.", brand);
+                    return;
+                }
+
+                // Set form action to correct PUT route
+                const actionUrl = '/admin/brands/' + brand.id;
+                $('#editBrandForm').attr('action', actionUrl);
+                console.log("Form action set to:", actionUrl);
+
+                // Populate form fields
+                $('#editBrandForm input[name="name"]').val(brand.name);
+                $('#editBrandForm input[name="slug"]').val(brand.slug);
+                $('#editBrandForm textarea[name="description"]').val(brand.description);
+                $('#editBrandForm input[name="website"]').val(brand.website);
+                $('#editBrandForm select[name="status"]').val(brand.status);
+                $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
+
+                // Preview logo
+                if (brand.logo) {
+                    $('#editBrandLogoPreview')
+                        .attr('src', '/storage/' + brand.logo)
+                        .removeClass('d-none')
+                        .show();
+                } else {
+                    $('#editBrandLogoPreview').addClass('d-none').hide();
+                }
+                // Show modal
+                $('#editBrandModal').modal('show');
+            },
+            error: function (xhr) {
+                console.error("Error fetching brand:", xhr.responseText);
             }
+        });
+    });
 
-            $('#editBrandModal').modal('show');
+    // Auto-generate slug when name changes (create & edit)
+    $(document).on('input', '#editBrandForm input[name="name"], #nameInput', function () {
+        let slug = $(this).val()
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+        $('#editBrandForm input[name="slug"], #slugInput').val(slug);
+    });
+
+    // Preview logo image (edit form)
+    $(document).on('change', '#editBrandForm input[name="logo"]', function () {
+        const preview = document.getElementById('editBrandLogoPreview');
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(this.files[0]);
         }
     });
 });
-  
 </script>
 @endpush

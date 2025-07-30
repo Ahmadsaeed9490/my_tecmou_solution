@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('password'); // VARCHAR(255)
             $table->string('profile_photo')->nullable(); // VARCHAR(255)
             $table->unsignedBigInteger('role_id')->nullable(); // INT
-            $table->tinyInteger('status')->default(1); // TINYINT(1)
+            $table->tinyInteger('status')->default(0); // TINYINT(1)
             $table->timestamp('email_verified_at')->nullable(); // DATETIME
             $table->timestamp('last_login_at')->nullable(); // DATETIME
             $table->string('last_login_ip', 45)->nullable(); // VARCHAR(45)

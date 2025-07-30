@@ -19,6 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+Route::prefix('admin')->group(function () {
+    Route::post('/categories/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggleStatus');
+});
     Route::prefix('admin/categories')->name('admin.categories.')->group(function () {
         Route::get('admin/categories/{id}/subcategories', [CategoryController::class, 'getSubcategories']);
         Route::get('/index', [CategoryController::class, 'index'])->name('index');         // List categories
@@ -29,7 +32,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
         Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
 
+
     });
+ Route::prefix('admin')->group(function () {
+    Route::post('/brands/toggle-status', [brandController::class, 'toggleStatus'])->name('brands.toggleStatus');
+});
 
  Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
     Route::get('/', [BrandController::class, 'index'])->name('index');

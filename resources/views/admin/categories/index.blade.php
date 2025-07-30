@@ -3,13 +3,20 @@
 
 <div class="container-fluid pt-4 px-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>All Categories</h4>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add_category_Modal">Add Category</button>
+        <h4>All Category</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">Add Category</button>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+   @if ($errors->any())
+  <div class="alert alert-danger">
+    <ul class="mb-0">
+      @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+
 
     <div class="table-responsive bg-white p-3 rounded shadow-sm">
         <table class="table table-bordered align-middle">
@@ -19,36 +26,51 @@
                       <th>Name</th>
                       <th>Slug</th>
                       <th>Description</th>
-                      <th>Image</th>
                       <th>Status</th>
+                      <th>Image</th>
                       <th>Sort Order</th>
                       <th>Actions</th>
                 </tr>
             </thead>
-           <tbody>
+            <tbody>
             @foreach ($categories as $category)
               <tr class="category-row">
                 <td>{{ $category->id }}</td>
                 <td>{{ $category->name }}</td>
                 <td>{{ $category->slug }}</td>
                 <td>{{ \Illuminate\Support\Str::limit($category->description, 50) }}</td>
-                 <td>
-                        <span class="badge bg-{{ $category->status ? 'success' : 'danger' }}">
-                            {{ $category->status ? 'Active' : 'Inactive' }}
-                        </span>
-                    </td>
+                <td>
+                    @if ($category->deleted_at)
+                        <span class="badge bg-secondary">Deleted</span>
+                    @else
+                        <div class="form-check form-switch">
+                            <input type="checkbox"
+                                  class="form-check-input toggle-status"
+                                  data-id="{{ $category->id }}"
+                                  {{ $category->status ? 'checked' : '' }}>
+                            <label class="form-check-label ms-2">
+                                <span class="badge status-badge bg-{{ $category->status ? 'success' : 'danger' }}">
+                                    {{ $category->status ? 'Active' : 'Inactive' }}
+                                </span>
+                            </label>
+                        </div>
+                    @endif
+                </td>
                       <td>
                         @if($category->image)
                           <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="40">
                         @endif
                       </td>
-
-                <td>{{ $category->status ? 'Active' : 'Inactive' }}</td>
                 <td>{{ $category->sort_order }}</td>
-                <td>
-                  <a href="javascript:void(0)" onclick="editCategory({{ $category->id }})" class="btn btn-sm btn-warning">Edit</a>
-                  <button onclick="setDeleteId({{ $category->id }})" class="btn btn-sm btn-danger">Delete</button>
-                </td>
+              <td>
+                  @if (!$category->deleted_at)
+                      <a href="javascript:void(0)" onclick="editCategory({{ $category->id }})" class="btn btn-sm btn-warning">Edit</a>
+                      <button onclick="setDeleteId({{ $category->id }})" class="btn btn-sm btn-danger">Delete</button>
+                  @else
+                      <span class="text-muted">No Actions</span>
+                  @endif
+              </td>
+
               </tr>
             @endforeach
           </tbody>
@@ -57,9 +79,10 @@
 </div>
 
 <!-- Add Category Modal -->
-<div class="modal fade" id="add_category_Modal" tabindex="-1">
+<div class="modal fade" id="createCategoryModal" tabindex="-1">
   <div class="modal-dialog">
     <form method="POST" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data">
+
       @csrf
       <div class="modal-content">
         <div class="modal-header">
@@ -178,4 +201,50 @@
     });
   });
 </script>
+<script>
+$(document).ready(function () {
+    $('.toggle-status').on('change', function () {
+        const checkbox = $(this);
+        const isChecked = checkbox.is(':checked');
+        const status = isChecked ? 1 : 0;
+        const categoryId = checkbox.data('id');
+        const $badge = checkbox.closest('td').find('.status-badge');
+
+        // Disable the checkbox temporarily to prevent double clicks
+        checkbox.prop('disabled', true);
+
+        $.ajax({
+            url: "{{ route('categories.toggleStatus') }}",
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: categoryId,
+                status: status
+            },
+            success: function (response) {
+                if (response.success) {
+                    $badge
+                        .removeClass('bg-success bg-danger')
+                        .addClass(status ? 'bg-success' : 'bg-danger')
+                        .text(status ? 'Active' : 'Inactive');
+                } else {
+                    // Rollback checkbox if failed
+                    checkbox.prop('checked', !isChecked);
+                    alert("Failed to update status.");
+                }
+            },
+            error: function () {
+                // Rollback checkbox if error
+                checkbox.prop('checked', !isChecked);
+                alert("Error updating status.");
+            },
+            complete: function () {
+                checkbox.prop('disabled', false);
+            }
+        });
+    });
+});
+</script>
+
+
 @endsection

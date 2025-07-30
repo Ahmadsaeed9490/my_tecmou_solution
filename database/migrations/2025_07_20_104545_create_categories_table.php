@@ -23,7 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by')->nullable(); // INT
             $table->unsignedBigInteger('updated_by')->nullable(); // INT
             $table->timestamps(); // created_at, updated_at
-            $table->softDeletes(); // deleted_at
+            $table->softDeletes(); // Add this line
         });
     }
 

@@ -13,7 +13,12 @@
     <!-- User Table -->
     <table class="table table-bordered">
         <thead>
-            <tr><th>#</th><th>Name</th><th>Email</th><th>Actions</th></tr>
+            <tr><th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+               <th> status</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
         @foreach($users as $user)
@@ -21,9 +26,9 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
+                <td>{{ $user->status }}</td>
                 <td>
                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">Edit</button>
-
                     <form method="POST" action="{{ route('admin.users.delete', $user->id) }}" class="d-inline">
                         @csrf @method('DELETE')
                         <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">Delete</button>
