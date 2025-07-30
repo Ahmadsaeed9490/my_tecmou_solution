@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
@@ -15,46 +16,79 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    
+
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:users,email',
-            'password' => 'required|min:6|confirmed',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'phone' => 'nullable|string|max:20',
+        'username' => 'nullable|string|unique:users,username',
+        'password' => 'required|string|confirmed|min:6',
+        'profile_photo' => 'nullable|image',
+        'role_id' => 'nullable|exists:roles,id',
+        'status' => 'required|boolean',
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        return redirect()->back()->with('success', 'User created successfully!');
+    // Handle photo upload
+    if ($request->hasFile('profile_photo')) {
+        $path = $request->file('profile_photo')->store('profile_photos', 'public');
+        $validated['profile_photo'] = $path;
     }
 
-    public function update(Request $request, $id)
-    {
-        $user = User::findOrFail($id);
+    $validated['password'] = bcrypt($validated['password']);
 
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|unique:users,email,' . $id,
-            'password' => 'nullable|min:6|confirmed',
-        ]);
+    User::create($validated);
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        }
+    return redirect()->back()->with('success', 'User created successfully!');
+}
+
+public function update(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $id,
+        'phone' => 'nullable|string|max:20',
+        'status' => 'required|boolean',
+        'password' => 'nullable|string|min:6',
+        'profile_photo' => 'nullable|image',
+    ]);
+
+    if ($request->hasFile('profile_photo')) {
+        $path = $request->file('profile_photo')->store('profile_photos', 'public');
+        $validated['profile_photo'] = $path;
+    }
+
+    if (!empty($request->password)) {
+        $validated['password'] = bcrypt($request->password);
+    } else {
+        unset($validated['password']);
+    }
+
+    $user->update($validated);
+
+    return redirect()->back()->with('success', 'User updated successfully!');
+}
+
+public function toggleStatus(Request $request)
+{
+    $user = user::find($request->id);
+
+    if ($user) {
+        $user->status = $request->status;
         $user->save();
-
-        return redirect()->back()->with('success', 'User updated successfully!');
+        return response()->json(['success' => true]);
     }
 
+    return response()->json(['success'=> false]);
+}
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
         return redirect()->back()->with('success', 'User deleted successfully!');
     }
+    
 }
