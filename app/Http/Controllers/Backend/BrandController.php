@@ -17,32 +17,45 @@ class BrandController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'status' => 'required|boolean',
+        'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        $brand = new Brand();
-        $brand->name = $request->input('name');
-        $brand->slug = $request->input('slug');
-        $brand->description = $request->input('description');
-        $brand->website = $request->input('website');
-        $brand->status = $request->input('status');
-        $brand->sort_order = $request->input('sort_order');
+    $brand = new Brand();
+    $brand->name = $request->input('name');
+    $brand->slug = $request->input('slug');
+    $brand->description = $request->input('description');
+    $brand->website = $request->input('website');
+    $brand->status = $request->input('status');
+    $brand->sort_order = $request->input('sort_order');
 
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $filename = time() . '.' . $logo->getClientOriginalExtension();
-            Storage::disk('public')->put('brands/' . $filename, file_get_contents($logo));
-            $brand->logo = 'brands/' . $filename;
+    if ($request->hasFile('logo')) {
+        // Set destination to public/storage/brands
+        $file = $request->file('logo');
+        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+        $destinationPath = public_path('storage/brands');
+
+        // Create the folder if it doesn't exist
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
         }
 
-        $brand->save();
+        // Move file to public/storage/brands
+        $file->move($destinationPath, $filename);
 
-        return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully!');
+        // Save relative path to database
+        $brand->logo = 'brands/' . $filename;
     }
+
+    $brand->save();
+
+    return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully!');
+}
+
 
     public function edit($id)
     {
@@ -51,32 +64,59 @@ class BrandController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required',
-            'logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+{
+    $request->validate([
+        'name' => 'required',
+        'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        $brand = Brand::find($id);
-        $brand->name = $request->input('name');
-        $brand->slug = $request->input('slug');
-        $brand->description = $request->input('description');
-        $brand->website = $request->input('website');
-        $brand->status = $request->input('status');
-        $brand->sort_order = $request->input('sort_order');
+    $brand = Brand::findOrFail($id);
 
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $filename = time() . '.' . $logo->getClientOriginalExtension();
-            Storage::disk('public')->put('brands/' . $filename, file_get_contents($logo));
-            $brand->logo = 'brands/' . $filename;
+    $brand->name = $request->input('name');
+    $brand->slug = $request->input('slug');
+    $brand->description = $request->input('description');
+    $brand->website = $request->input('website');
+    $brand->status = $request->input('status');
+    $brand->sort_order = $request->input('sort_order');
+
+    if ($request->hasFile('logo')) {
+        // Delete old logo if exists
+        if ($brand->logo && file_exists(public_path('storage/' . $brand->logo))) {
+            unlink(public_path('storage/' . $brand->logo));
         }
 
-        $brand->save();
+        $file = $request->file('logo');
+        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+        $destinationPath = public_path('storage/brands');
 
-        return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully!');
+        // Create folder if not exists
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        // Move new logo
+        $file->move($destinationPath, $filename);
+
+        // Save relative path
+        $brand->logo = 'brands/' . $filename;
     }
 
+    $brand->save();
+
+    return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully!');
+}
+
+public function toggleStatus(Request $request)
+{
+    $brand = brand::find($request->id);
+
+    if ($brand) {
+        $brand->status = $request->status;
+        $brand->save();
+        return response()->json(['success' => true]);
+    }
+    return response()->json(['success' => false]);
+}
     public function destroy($id)
     {
         $brand = Brand::find($id);

@@ -18,13 +18,14 @@
     <label>Sort Order</label>
     <input type="number" name="sort_order" class="form-control" value="0">
 </div>
-<div class="col-md-6">
-    <label>Status</label>
-    <select name="status" class="form-select">
-        <option value="1">Active</option>
-        <option value="0">Inactive</option>
-    </select>
+<div class="mb-3">
+  <label for="status" class="form-label">Status</label>
+  <select name="status" class="form-control" required>
+    <option value="1">Active</option>
+    <option value="0">Inactive</option>
+  </select>
 </div>
+
 <div class="col-md-6">
     <label>Logo</label>
     <input type="file" name="logo" class="form-control" accept="image/*" onchange="previewLogo(this)">

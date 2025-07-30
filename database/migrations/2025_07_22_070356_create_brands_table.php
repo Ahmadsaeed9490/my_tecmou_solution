@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->string('logo')->nullable();
             $table->string('website')->nullable();
-            $table->boolean('status')->default(true);
+            $table->boolean('status')->default(0);
             $table->integer('sort_order')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();

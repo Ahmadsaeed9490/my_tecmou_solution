@@ -1,7 +1,7 @@
 @extends('layout.master')
 
 @section('content')
-    <div class="content">
+    {{-- <div class="content">
         <div class="container-fluid pt-4 px-4 mb-5">
             <div class="border-bottom">
                 <h3 class="text-center pb-2 mb-0">All Products</h3>
@@ -71,8 +71,63 @@
                 </div>
             </div>
         </div>
+    </div> --}}
+<div class="container-fluid pt-4 px-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>All Products</h4>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createProductModal">Add Products</button>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <div class="table-responsive bg-white p-3 rounded shadow-sm">
+        <table class="table table-bordered align-middle">
+             <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Slug</th>
+                                <th>SKU</th>
+                                <th>Model</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Price</th>
+                                <th>Discount</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+             </thead>
+              <tbody id="product-table">
+                            @foreach($products as $product)
+                                <tr id="product-{{ $product->id }}">
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $product->name }}</td>
+                                    <td>{{ $product->slug }}</td>
+                                    <td>{{ $product->sku }}</td>
+                                    <td>{{ $product->model }}</td>
+                                    <td>{{ $product->category->name ?? 'N/A' }}</td>
+                                    <td>{{ $product->brand->name ?? 'N/A' }}</td>
+                                    <td>{{ $product->price }}</td>
+                                    <td>{{ $product->discount }}</td>
+                                    <td>{{ $product->stock_quantity }}</td>
+                                    <td>                        
+                                        <span class="badge bg-{{ $product->status == 1 ? 'success' : 'danger' }}">
+                                           {{ $product->status == 1 ? 'Active' : 'Inactive'  }}
+                                      </span>
+                                    </td>
+                                    <td>
+                                        <button onclick="editProduct({{ $product->id }})" class="btn btn-sm btn-info">Edit</button>
+                                        <button onclick="deleteProduct({{ $product->id }})" class="btn btn-sm btn-danger">Delete</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+        </table>
+    </div>
+</div>
     <!-- Create Modal -->
     <div class="modal fade" id="createProductModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -138,12 +193,21 @@
       $('#edit-id').val(data.id);
       $('#edit-name').val(data.name);
       $('#edit-slug').val(data.slug);
+      $('#edit-sku').val(data.sku);
+      $('#edit-model').val(data.model);
       $('#edit-category').val(data.category_id);
       $('#edit-brand').val(data.brand_id);
-    $('#edit-status').val(data.status); // data.status must be 0 or 1
-
+      $('#edit-price').val(data.price);
+      $('#edit-discount').val(data.discount);
+      $('#edit-stock').val(data.stock_quantity);
+      $('#edit-status').val(data.status);
       $('#edit-featured').val(data.is_featured);
       $('#edit-description').val(data.description);
+      $('#edit-specifications').val(data.specifications);
+      $('#edit-warranty').val(data.warranty);
+
+      // Reset slug manual edit flag when modal opens
+      window.isSlugManuallyEdited = false;
 
       // Show modal
       $('#editProductModal').modal('show');
@@ -178,3 +242,4 @@
 @endsection
 
   
+    
