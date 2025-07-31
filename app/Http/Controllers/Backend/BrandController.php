@@ -12,10 +12,9 @@ class BrandController extends Controller
     
     public function index()
     {
-        $brands = Brand::all();
+        $brands = Brand::withTrashed()->get();
         return view('admin.brands.index', compact('brands'));
     }
-
 
    public function store(Request $request)
 {
@@ -108,15 +107,20 @@ class BrandController extends Controller
 
 public function toggleStatus(Request $request)
 {
-    $brand = brand::find($request->id);
+    $brand = Brand::find($request->id);
 
     if ($brand) {
         $brand->status = $request->status;
         $brand->save();
+
         return response()->json(['success' => true]);
     }
+
     return response()->json(['success' => false]);
 }
+
+
+
     public function destroy($id)
     {
         $brand = Brand::find($id);

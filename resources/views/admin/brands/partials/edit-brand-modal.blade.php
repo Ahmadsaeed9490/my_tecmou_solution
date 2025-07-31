@@ -1,126 +1,73 @@
-@extends('layout.master')
 
-@section('content')
-<div class="container-fluid pt-4 px-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>All Users</h4>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">Add User</button>
-    </div>
+<input type="hidden" name="id" id="edit-brand-id" value="{{ $brand->id ?? '' }}">
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    <div class="table-responsive bg-white p-3 rounded shadow-sm">
-        <table class="table table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Photo</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Username</th>
-                    <th>Status</th>
-                    <th>Last Login</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
-                <tr>
-                    <td>
-                        @if($user->profile_photo)
-                            <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="Photo" width="40" height="40">
-                        @else
-                            <span class="text-muted">No Photo</span>
-                        @endif
-                    </td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ $user->phone }}</td>
-                    <td>{{ $user->username }}</td>
-                    <td>
-                        <span class="badge bg-{{ $user->status ? 'success' : 'secondary' }}">
-                            {{ $user->status ? 'Active' : 'Inactive' }}
-                        </span>
-                    </td>
-                    <td>{{ $user->last_login_at ?? 'N/A' }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-info editUserBtn" data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#editUserModal">Edit</button>
-                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+<div class="col-md-6">
+    <label>Name</label>
+    <input type="text" name="name" id="edit-brand-name" class="form-control" value="{{ $brand->name ?? '' }}" required>
 </div>
 
-<!-- Add Modal -->
-<div class="modal fade" id="createUserModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data" class="modal-content">
-      @csrf
-      <div class="modal-header">
-        <h5 class="modal-title">Add User</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body row g-3">
-        @include('admin.users.partials.add-user-modal')
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Create User</button>
-      </div>
-    </form>
-  </div>
+<div class="col-md-6">
+    <label>Slug</label>
+    <input type="text" name="slug" id="edit-brand-slug" class="form-control" value="{{ $brand->slug ?? '' }}">
 </div>
 
-<!-- Edit Modal -->
-<div class="modal fade" id="editUserModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <form id="editUserForm" method="POST" enctype="multipart/form-data" class="modal-content">
-      @csrf
-      @method('PUT')
-      <div class="modal-header">
-        <h5 class="modal-title">Edit User</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body row g-3">
-        @include('admin.users.partials.edit-user-modal')
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Update User</button>
-      </div>
-    </form>
-  </div>
+<div class="col-12">
+    <label>Description</label>
+    <textarea name="description" id="edit-brand-description" class="form-control">{{ $brand->description ?? '' }}</textarea>
 </div>
-@endsection
 
-@push('scripts')
+<div class="col-md-6">
+    <label>Website</label>
+    <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
+</div>
+
+<div class="col-md-6">
+    <label>Sort Order</label>
+    <input type="number" name="sort_order" id="edit-brand-sort-order" class="form-control" value="{{ $brand->sort_order ?? 0 }}">
+</div>
+
+<div class="mb-3">
+    <label for="status" class="form-label">Status</label>
+    <select name="status" id="edit-brand-status" class="form-control" required>
+        <option value="1" {{ isset($brand) && $brand->status == 1 ? 'selected' : '' }}>Active</option>
+        <option value="0" {{ isset($brand) && $brand->status == 0 ? 'selected' : '' }}>Inactive</option>
+    </select>
+</div>
+
+<div class="col-md-6">
+    <label>Logo</label>
+    <input type="file" name="logo" id="edit-brand-logo" class="form-control" accept="image/*">
+    <img id="editBrandLogoPreview"
+         src="{{ isset($brand) && $brand->logo ? asset('storage/' . $brand->logo) : '#' }}"
+         class="mt-2 {{ isset($brand) && $brand->logo ? '' : 'd-none' }} border rounded"
+         width="60" height="60">
+</div>
+
 <script>
-$('.editUserBtn').on('click', function () {
-    const id = $(this).data('id');
-    $.ajax({
-        url: '/admin/users/' + id + '/edit',
-        type: 'GET',
-        success: function (user) {
-            $('#editUserForm').attr('action', '/admin/users/' + user.id);
-            $('#editUserForm input[name="name"]').val(user.name);
-            $('#editUserForm input[name="email"]').val(user.email);
-            $('#editUserForm input[name="phone"]').val(user.phone);
-            $('#editUserForm input[name="username"]').val(user.username);
-            $('#editUserForm.select[name="role_id"]').val(user.role_id);
-            $('#editUserForm.select[name="status"]').val(user.status);
-            $('#editUserForm input[name="last_login_at"]').val(user.last_login_at);
-            $('#editUserForm input[name="last_login_ip"]').val(user.last_login_ip);
-            if (user.profile_photo) {
-                $('#editUserPhotoPreview').attr('src', '/storage/' + user.profile_photo).removeClass('d-none');
-            }
+    // Auto-generate slug from name
+    $(document).on('input', '#edit-brand-name', function () {
+        const nameValue = this.value;
+        const slug = nameValue
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+
+        $('#edit-brand-slug').val(slug);
+    });
+
+    // Preview logo image
+    $(document).on('change', '#edit-brand-logo', function () {
+        const preview = document.getElementById('editBrandLogoPreview');
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(this.files[0]);
         }
     });
-});
 </script>
-@endpush

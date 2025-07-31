@@ -1,3 +1,11 @@
+<style>
+/* Optional: improve the toggle UI */
+.form-check-input {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+</style>
+
 <div class="col-md-6">
     <label>Name</label>
     <input type="text" name="name" class="form-control" required>
@@ -19,11 +27,12 @@
     <input type="number" name="sort_order" class="form-control" value="0">
 </div>
 <div class="mb-3">
-  <label for="status" class="form-label">Status</label>
-  <select name="status" class="form-control" required>
-    <option value="1">Active</option>
-    <option value="0">Inactive</option>
-  </select>
+    <label class="form-label">Status</label>
+    <select name="status" class="form-control @error('status') is-invalid @enderror">
+        <option value="1" {{ old('status', $brand->status ?? 1) == 1 ? 'selected' : '' }}>Active</option>
+        <option value="0" {{ old('status', $brand->status ?? 1) == 0 ? 'selected' : '' }}>Inactive</option>
+    </select>
+    @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 
 <div class="col-md-6">

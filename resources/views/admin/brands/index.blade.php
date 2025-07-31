@@ -39,11 +39,24 @@
                     <td>{{ $brand->name }}</td>
                     <td>{{ $brand->slug }}</td>
                     <td><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></td>
-                    <td>
-                        <span class="badge bg-{{ $brand->status ? 'success' : 'danger' }}">
-                            {{ $brand->status ? 'Active' : 'Inactive' }}
-                        </span>
-                    </td>
+                        <td>
+                                @if ($brand->deleted_at)
+                                    <span class="badge bg-secondary">Deleted</span>
+                                @else
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox"
+                                            class="form-check-input toggle-status"
+                                            data-id="{{ $brand->id }}"
+                                            {{ $brand->status ? 'checked' : '' }}>
+                                        <label class="form-check-label ms-2">
+                                            <span class="badge status-badge bg-{{ $brand->status ? 'success' : 'danger' }}">
+                                                {{ $brand->status ? 'Active' : 'Inactive' }}
+                                            </span>
+                                        </label>
+                                    </div>
+                                @endif
+                            </td>
+
                     <td>{{ $brand->sort_order }}</td>
                     <td>
                         <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}" data-bs-toggle="modal" data-bs-target="#editBrandModal">Edit</button>
@@ -106,10 +119,10 @@
 $(document).ready(function () {
     // Edit button click
     $('.editBrandBtn').on('click', function () {
-        const id = $(this).data('id');
+        const brandId = $(this).data('id');
 
         $.ajax({
-            url: '/admin/brands/' + id + '/edit',
+            url: '/admin/brands/' + brandId + '/edit',
             type: 'GET',
             success: function (brand) {
                 if (!brand.id) {
@@ -174,4 +187,48 @@ $(document).ready(function () {
     });
 });
 </script>
+<script>
+$(document).ready(function () {
+    $('.toggle-status').on('change', function () {
+        const checkbox = $(this);
+        const isChecked = checkbox.is(':checked');
+        const status = isChecked ? 1 : 0;
+        const brandId = checkbox.data('id');
+        const $badge = checkbox.closest('td').find('.status-badge');
+
+        checkbox.prop('disabled', true);
+
+        $.ajax({
+            url: "{{ route('brands.toggleStatus') }}",
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: brandId,
+                status: status
+            },
+            success: function (response) {
+                if (response.success) {
+                    $badge
+                        .removeClass('bg-success bg-danger')
+                        .addClass(status ? 'bg-success' : 'bg-danger')
+                        .text(status ? 'Active' : 'Inactive');
+                } else {
+                    checkbox.prop('checked', !isChecked);
+                    alert("Failed to update status.");
+                }
+            },
+            error: function () {
+                checkbox.prop('checked', !isChecked);
+                alert("Error updating status.");
+            },
+            complete: function () {
+                checkbox.prop('disabled', false);
+            }
+        });
+    });
+});
+</script>
+
+
+
 @endpush
