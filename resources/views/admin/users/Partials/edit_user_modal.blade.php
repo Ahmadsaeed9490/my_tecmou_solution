@@ -10,7 +10,7 @@
 
                     <div class="col-md-6">
                         <label>Phone</label>
-                        <input type="text" name="phone" class="form-control" value="{{ $user->phone }}">
+                        <input type="number" name="phone" class="form-control" value="{{ $user->phone }}">
                     </div>
 
                     <div class="col-md-6">

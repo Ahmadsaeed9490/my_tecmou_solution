@@ -69,7 +69,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body row g-3">
-        @include('admin.brands.partials.add-brand-modal')
+       @include('admin.brands.partials.add-brand-modal')
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Create Brand</button>
@@ -82,73 +82,72 @@
 <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
 <form id="editBrandForm" method="POST" enctype="multipart/form-data" class="modal-content">
-    
     @csrf
     @method('PUT')
 
       <!-- The form will be populated via AJAX -->
       <div class="modal-header">
         <h5 class="modal-title">Edit Brand</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<button class="btn btn-sm btn-primary btnEditBrand" data-id="{{ $brand->id }}">Edit</button>
       </div>
       <div class="modal-body row g-3">
-        @include('admin.brands.partials.edit-brand-modal')
+     @include('admin.brands.partials.edit-brand-modal')
       </div>
       <div class="modal-footer">
         <button type="submit" class="btn btn-primary">Update Brand</button>
       </div>
+        <input type="hidden" name="id" id="editBrandId">
     </form>
+  
+
   </div>
 </div>
 @endsection
 @push('scripts')
 <script>
 $(document).ready(function () {
-    // Edit button click
-    $('.editBrandBtn').on('click', function () {
-        const id = $(this).data('id');
+    // When edit button is clicked
+    $(document).on('click', '.btnEditBrand', function () {
+        let brandId = $(this).data('id');
 
+        // Send AJAX GET request to fetch brand details
         $.ajax({
-            url: '/admin/brands/' + id + '/edit',
+            url: '/admin/brands/' + brandId + '/edit',
             type: 'GET',
             success: function (brand) {
-                if (!brand.id) {
-                    console.error("No ID returned in response.", brand);
-                    return;
-                }
-
-                // Set form action to correct PUT route
-                const actionUrl = '/admin/brands/' + brand.id;
-                $('#editBrandForm').attr('action', actionUrl);
-                console.log("Form action set to:", actionUrl);
-
-                // Populate form fields
+                // Set values in modal inputs
                 $('#editBrandForm input[name="name"]').val(brand.name);
                 $('#editBrandForm input[name="slug"]').val(brand.slug);
                 $('#editBrandForm textarea[name="description"]').val(brand.description);
                 $('#editBrandForm input[name="website"]').val(brand.website);
-                $('#editBrandForm select[name="status"]').val(brand.status);
                 $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
+                $('#editBrandForm select[name="status"]').val(brand.status);
 
-                // Preview logo
-                if (brand.logo) {
+                // Show current logo if exists
+                if (brand.logo_url) {
                     $('#editBrandLogoPreview')
-                        .attr('src', '/storage/' + brand.logo)
                         .removeClass('d-none')
-                        .show();
+                        .attr('src', brand.logo_url);
                 } else {
-                    $('#editBrandLogoPreview').addClass('d-none').hide();
+                    $('#editBrandLogoPreview').addClass('d-none');
                 }
-                // Show modal
+
+                // Set form action URL
+                $('#editBrandForm').attr('action', '/admin/brands/' + brand.id);
+                $('#editBrandForm input[name="id"]').val(brand.id);
+
+                // Open the modal
                 $('#editBrandModal').modal('show');
             },
-            error: function (xhr) {
-                console.error("Error fetching brand:", xhr.responseText);
+            error: function (err) {
+                alert('Error loading brand data.');
+                console.error(err);
             }
         });
     });
-
-    // Auto-generate slug when name changes (create & edit)
+});
+</script>
+<script> // Auto-generate slug when name changes (create & edit)
     $(document).on('input', '#editBrandForm input[name="name"], #nameInput', function () {
         let slug = $(this).val()
             .toLowerCase()
@@ -172,6 +171,5 @@ $(document).ready(function () {
             reader.readAsDataURL(this.files[0]);
         }
     });
-});
 </script>
 @endpush

@@ -11,13 +11,13 @@
 
     <div class="col-12 mb-3">
         <label>Phone</label>
-        <input type="text" name="phone" class="form-control form-control-lg">
+        <input type="number" name="phone" class="form-control form-control-lg">
     </div>
 
     <div class="col-12 mb-3">
         <label>Username</label>
         <input type="text" name="username" class="form-control form-control-lg">
-    </div>
+    </div>     
 
     <div class="col-12 mb-3">
         <label>Password</label>
@@ -41,8 +41,10 @@
                 <label class="form-check-label" for="inactive">Inactive</label>
             </div>
         </div>
-    </div>
 
+
+        
+    </div>
     <div class="col-12 mb-3">
         <label>Profile Photo</label>
         <input type="file" name="profile_photo" class="form-control form-control-lg" accept="image/*" onchange="previewPhoto(this)">

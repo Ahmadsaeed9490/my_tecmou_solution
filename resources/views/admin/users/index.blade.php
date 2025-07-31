@@ -55,7 +55,7 @@
                         </span>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">Edit</button>
+                            <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">Edit</button>
                          <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="d-inline">
                         @csrf @method('DELETE')
                         <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">Delete</button>

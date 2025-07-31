@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\ProductPriceController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -66,6 +67,21 @@ Route::prefix('admin/users')->name('admin.users.')->group(function () {
     Route::post('/update/{id}', [UserController::class, 'update'])->name('update');
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy'); // ✅ Corrected
 });
+
+
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('product-prices', [ProductPriceController::class, 'index'])->name('product-prices.index');
+    Route::get('product-prices/create', [ProductPriceController::class, 'create'])->name('product-prices.create');
+    Route::post('product-prices', [ProductPriceController::class, 'store'])->name('product-prices.store');
+    Route::get('product-prices/{id}', [ProductPriceController::class, 'show'])->name('product-prices.show');
+    Route::get('product-prices/{id}/edit', [ProductPriceController::class, 'edit'])->name('product-prices.edit');
+    Route::put('product-prices/{id}', [ProductPriceController::class, 'update'])->name('product-prices.update');
+    Route::delete('product-prices/{id}', [ProductPriceController::class, 'destroy'])->name('product-prices.destroy');
+});
+
+
+
 });
 
 require __DIR__ . '/auth.php';

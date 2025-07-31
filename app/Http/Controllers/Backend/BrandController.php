@@ -9,12 +9,30 @@ use Illuminate\Support\Facades\Storage;
 class BrandController extends Controller
 
 {
+    public function create()
+{
+    $brand = new Brand(); // empty instance
+    return view('admin.brands.create', compact('brand'));
+}
+
     
     public function index()
-    {
-        $brands = Brand::all();
-        return view('admin.brands.index', compact('brands'));
-    }
+{
+    $brands = Brand::all();
+    $brand = new Brand(); // Empty instance for the create modal
+    return view('admin.brands.index', compact('brands', 'brand'));
+}
+
+
+public function edit($id)
+{
+    $brand = Brand::findOrFail($id);
+    $brand->logo_url = $brand->logo ? asset('storage/' . $brand->logo) : null;
+
+    return response()->json($brand);
+}
+
+
 
 
    public function store(Request $request)
@@ -57,54 +75,7 @@ class BrandController extends Controller
 }
 
 
-    public function edit($id)
-    {
-        $brand = Brand::find($id);
-        return response()->json($brand);
-    }
-
-    public function update(Request $request, $id)
-{
-    $request->validate([
-        'name' => 'required',
-        'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
-
-    $brand = Brand::findOrFail($id);
-
-    $brand->name = $request->input('name');
-    $brand->slug = $request->input('slug');
-    $brand->description = $request->input('description');
-    $brand->website = $request->input('website');
-    $brand->status = $request->input('status');
-    $brand->sort_order = $request->input('sort_order');
-
-    if ($request->hasFile('logo')) {
-        // Delete old logo if exists
-        if ($brand->logo && file_exists(public_path('storage/' . $brand->logo))) {
-            unlink(public_path('storage/' . $brand->logo));
-        }
-
-        $file = $request->file('logo');
-        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-        $destinationPath = public_path('storage/brands');
-
-        // Create folder if not exists
-        if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
-        }
-
-        // Move new logo
-        $file->move($destinationPath, $filename);
-
-        // Save relative path
-        $brand->logo = 'brands/' . $filename;
-    }
-
-    $brand->save();
-
-    return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully!');
-}
+   
 
 public function toggleStatus(Request $request)
 {
@@ -117,6 +88,7 @@ public function toggleStatus(Request $request)
     }
     return response()->json(['success' => false]);
 }
+
     public function destroy($id)
     {
         $brand = Brand::find($id);

@@ -34,6 +34,12 @@
                 </p>
             </a>
 
+               <a href="{{ route('admin.product-prices.index') }}" class="nav-item nav-link  text-center border-top">
+              <i class="bi bi-tags"></i>
+                <p class="pt-1 mb-0">
+                    <p class="pt-1 mb-0">product-prices</p>
+                </p>
+            </a>
             <div id="navbar-toggler3" class="nav-item nav-link text-center">
                 <i class="bi bi-file-earmark-text"></i>
                 <p class="pt-1 mb-0">Purchase</p>
