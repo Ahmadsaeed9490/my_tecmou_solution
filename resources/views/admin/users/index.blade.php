@@ -63,6 +63,8 @@
                         </td>
                     </tr>
 
+
+                    
                   
                     <!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
