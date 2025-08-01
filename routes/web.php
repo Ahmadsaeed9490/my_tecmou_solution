@@ -35,10 +35,7 @@ Route::prefix('admin')->group(function () {
 
 
     });
- Route::prefix('admin')->group(function () {
-    Route::post('/brands/toggle-status', [brandController::class, 'toggleStatus'])->name('brands.toggleStatus');
-});
-
+ Route::post('brands/toggle-status', [BrandController::class, 'toggleStatus'])->name('brands.toggleStatus');
  Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
     Route::get('/', [BrandController::class, 'index'])->name('index');
     Route::get('/create', [BrandController::class, 'create'])->name('create');
@@ -56,9 +53,7 @@ Route::prefix('admin')->group(function () {
         Route::put('/{id}', [ProductController::class, 'update'])->name('update');
         Route::delete('/{id}', [ProductController::class, 'destroy'])->name('destroy');
     });
-Route::prefix('admin')->group(function () {
-    Route::post('/users/toggle-status', [userController::class, 'toggleStatus'])->name('users.toggleStatus');
-});
+
 
 Route::prefix('admin/users')->name('admin.users.')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('index');

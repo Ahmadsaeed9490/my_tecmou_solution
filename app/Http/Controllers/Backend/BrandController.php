@@ -17,23 +17,10 @@ class BrandController extends Controller
 
     
     public function index()
-{
-    $brands = Brand::all();
-    $brand = new Brand(); // Empty instance for the create modal
-    return view('admin.brands.index', compact('brands', 'brand'));
-}
-
-
-public function edit($id)
-{
-    $brand = Brand::findOrFail($id);
-    $brand->logo_url = $brand->logo ? asset('storage/' . $brand->logo) : null;
-
-    return response()->json($brand);
-}
-
-
-
+    {
+        $brands = Brand::all();
+        return view('admin.brands.index', compact('brands'));
+    }
 
    public function store(Request $request)
 {
@@ -79,16 +66,17 @@ public function edit($id)
 
 public function toggleStatus(Request $request)
 {
-    $brand = brand::find($request->id);
+    $brand = Brand::find($request->id);
 
     if ($brand) {
         $brand->status = $request->status;
         $brand->save();
+
         return response()->json(['success' => true]);
     }
+
     return response()->json(['success' => false]);
 }
-
     public function destroy($id)
     {
         $brand = Brand::find($id);
