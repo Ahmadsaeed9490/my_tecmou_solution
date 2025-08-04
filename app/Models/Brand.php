@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Brand extends Model
 {
+        use SoftDeletes; // ✅ enable soft deletes
+
     protected $fillable = [
         'name',
         'slug',
@@ -23,5 +26,3 @@ class Brand extends Model
         return $this->hasMany(Product::class);
     }
 }
-
-
