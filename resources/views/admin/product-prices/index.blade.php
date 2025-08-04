@@ -22,6 +22,7 @@
             <thead class="table-light">
                 <tr>
                     <th>#</th>
+                    <th>Product_Name</th>
                     <th>Min Price</th>
                     <th>Max Price</th>
                     <th>Discount %</th>
@@ -33,15 +34,16 @@
             <tbody>
             @foreach ($productPrices as $price)
                 <tr class="product-row">
-                    <td>{{ $price->product_id }}</td>
+                    <td>{{ $price->id }}</td>
+                    <td>{{ $price->product->name ?? 'N/A' }}</td>
                     <td>{{ $price->min_price }}</td>
                     <td>{{ $price->max_price }}</td>
                     <td>{{ $price->discount_percent }}%</td>
                     <td>{{ $price->final_price }}</td>
                     <td>{{ strtoupper($price->currency) }}</td>
                     <td>
-                        <a href="javascript:void(0)" onclick="editPrice({{ $price->product_id }})" class="btn btn-sm btn-info">Edit</a>
-                        <button onclick="setDeleteId({{ $price->product_id }})" class="btn btn-sm btn-danger">Delete</button>
+                        <a href="javascript:void(0)" onclick="editPrice({{ $price->id }})" class="btn btn-sm btn-info">Edit</a>
+                        <button onclick="setDeleteId({{ $price->id }})" class="btn btn-sm btn-danger">Delete</button>
                     </td>
                 </tr>
             @endforeach
@@ -73,7 +75,7 @@
 <!-- Edit Modal -->
 <div class="modal fade" id="edit_price_Modal" tabindex="-1">
   <div class="modal-dialog">
-    <form method="POST" id="edit-price-form" action="{{ url('admin.product-prices/0') }}">
+    <form method="POST" id="edit-price-form" action="">
       @csrf
       @method('PUT')
       <div class="modal-content">
@@ -94,7 +96,7 @@
 <!-- Delete Modal -->
 <div class="modal fade" id="delete_price_Modal" tabindex="-1">
   <div class="modal-dialog">
-    <form method="POST" id="deleteForm" action="{{ url('admin/product-prices/0') }}">
+    <form method="POST" id="deleteForm" action="">
       @csrf
       @method('DELETE')
       <div class="modal-content">
@@ -119,10 +121,11 @@
 <script>
 function editPrice(id) {
   $.ajax({
-    url: "{{ url('admin/product-prices') }}/" + id + "/edit",
+    url: `/admin/product-prices/${id}/edit`,
     type: 'GET',
     success: function(data) {
-      $('#edit-price-form').attr('action', "{{ url('admin/product-prices') }}/" + id);
+      $('#edit-price-form').attr('action', `/admin/product-prices/${id}`);
+      $('#edit_product_id').val(data.product_id);
       $('#edit-price-form input[name="min_price"]').val(data.min_price);
       $('#edit-price-form input[name="max_price"]').val(data.max_price);
       $('#edit-price-form input[name="discount_percent"]').val(data.discount_percent);
@@ -130,14 +133,15 @@ function editPrice(id) {
       $('#edit-price-form input[name="currency"]').val(data.currency);
       $('#edit_price_Modal').modal('show');
     },
-    error: function() {
+    error: function(xhr) {
       alert('Failed to load product price data.');
+      console.log(xhr.responseText);
     }
   });
 }
 
 function setDeleteId(id) {
-  $('#deleteForm').attr('action', "{{ url('admin/product-prices') }}/" + id);
+  $('#deleteForm').attr('action', `/admin/product-prices/${id}`);
   $('#delete-error').addClass('d-none').text('');
   $('#delete_price_Modal').modal('show');
 }

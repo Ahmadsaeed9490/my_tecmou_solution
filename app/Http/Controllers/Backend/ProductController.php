@@ -27,23 +27,23 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'name'            => 'required|string|max:255',
-                'slug'            => 'nullable|string|max:255|unique:products,slug',
-                'sku'             => 'nullable|string|max:255',
-                'model'           => 'nullable|string|max:255',
-                'description'     => 'nullable|string',
-                'specifications'  => 'nullable|string',
-                'price'           => 'nullable|numeric|min:0',
-                'discount'        => 'nullable|numeric|min:0|max:100',
-                'stock_quantity'  => 'nullable|integer|min:0',
-                'warranty'        => 'nullable|string|max:255',
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:products,slug',
+                'sku' => 'nullable|string|max:255',
+                'model' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                'specifications' => 'nullable|string',
+                'price' => 'nullable|numeric|min:0',
+                'discount' => 'nullable|numeric|min:0|max:100',
+                'stock_quantity' => 'nullable|integer|min:0',
+                'warranty' => 'nullable|string|max:255',
                 'status' => 'required|in:1,0',
-                'is_featured'     => 'nullable|boolean',
-                'thumbnail'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'gallery_images'  => 'nullable|array',
-                'gallery_images.*'=> 'image|mimes:jpeg,png,jpg,gif|max:2048',
-                'category_id'     => 'required|exists:categories,id',
-                'brand_id'        => 'required|exists:brands,id',
+                'is_featured' => 'nullable|boolean',
+                'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'gallery_images' => 'nullable|array',
+                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'category_id' => 'required|exists:categories,id',
+                'brand_id' => 'required|exists:brands,id',
             ]);
 
             // Collect data
@@ -108,23 +108,23 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'name'            => 'required|string|max:255',
-                'slug'            => 'nullable|string|max:255|unique:products,slug,' . $id,
-                'sku'             => 'nullable|string|max:255',
-                'model'           => 'nullable|string|max:255',
-                'description'     => 'nullable|string',
-                'specifications'  => 'nullable|string',
-                'price'           => 'nullable|numeric|min:0',
-                'discount'        => 'nullable|numeric|min:0|max:100',
-                'stock_quantity'  => 'nullable|integer|min:0',
-                'warranty'        => 'nullable|string|max:255',
-                'status'          => 'required|in:1,0',
-                'is_featured'     => 'nullable|boolean',
-                'thumbnail'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'gallery_images'  => 'nullable|array',
-                'gallery_images.*'=> 'image|mimes:jpeg,png,jpg,gif|max:2048',
-                'category_id'     => 'required|exists:categories,id',
-                'brand_id'        => 'required|exists:brands,id',
+                'name' => 'required|string|max:255',
+                'slug' => 'nullable|string|max:255|unique:products,slug,' . $id,
+                'sku' => 'nullable|string|max:255',
+                'model' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                'specifications' => 'nullable|string',
+                'price' => 'nullable|numeric|min:0',
+                'discount' => 'nullable|numeric|min:0|max:100',
+                'stock_quantity' => 'nullable|integer|min:0',
+                'warranty' => 'nullable|string|max:255',
+                'status' => 'required|in:1,0',
+                'is_featured' => 'nullable|boolean',
+                'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'gallery_images' => 'nullable|array',
+                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'category_id' => 'required|exists:categories,id',
+                'brand_id' => 'required|exists:brands,id',
             ]);
 
             $data = $request->except(['thumbnail', 'gallery_images']);
@@ -163,7 +163,19 @@ class ProductController extends Controller
         }
     }
 
+ public function toggleStatus(Request $request)
+{
+    $product = Product::find($request->id);
 
+    if ($product) {
+        $product->status = $request->status;
+        $product->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false]);
+}
     public function destroy($id)
     {
         try {
@@ -189,13 +201,13 @@ class ProductController extends Controller
             $product->delete();
 
             return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
-            
+
         } catch (\Exception $e) {
             Log::error('Product deletion failed: ' . $e->getMessage(), [
                 'product_id' => $id,
                 'exception' => $e
             ]);
-            
+
             return redirect()->back()->with('error', 'Failed to delete product. Please try again.');
         }
     }

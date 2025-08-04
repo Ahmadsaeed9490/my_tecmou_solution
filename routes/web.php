@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\ProductController;
-use App\Http\Controllers\ProductPriceController;
+use App\Http\Controllers\Backend\ProductPriceController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -35,8 +35,16 @@ Route::prefix('admin')->group(function () {
 
 
     });
+<<<<<<< HEAD
  Route::post('brands/toggle-status', [BrandController::class, 'toggleStatus'])->name('brands.toggleStatus');
  Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
+=======
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('brands', BrandController::class);
+    Route::post('/brands/toggle-status', [BrandController::class, 'toggleStatus'])->name('brands.toggleStatus');
+});
+   Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
+>>>>>>> d732a781c6f635ee02e2233edf61c854439ebdee
     Route::get('/', [BrandController::class, 'index'])->name('index');
     Route::get('/create', [BrandController::class, 'create'])->name('create');
     Route::post('/store', [BrandController::class, 'store'])->name('store');
@@ -44,6 +52,8 @@ Route::prefix('admin')->group(function () {
     Route::put('/{id}', [BrandController::class, 'update'])->name('update');
     Route::delete('/{id}', [BrandController::class, 'destroy'])->name('destroy');
 });
+Route::post('products/toggle-status', [ProductController::class, 'toggleStatus'])->name('products.toggleStatus');
+
 
     Route::prefix('admin/products')->name('admin.products.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
@@ -63,8 +73,6 @@ Route::prefix('admin/users')->name('admin.users.')->group(function () {
     Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy'); // ✅ Corrected
 });
 
-
-
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('product-prices', [ProductPriceController::class, 'index'])->name('product-prices.index');
     Route::get('product-prices/create', [ProductPriceController::class, 'create'])->name('product-prices.create');
@@ -74,6 +82,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('product-prices/{id}', [ProductPriceController::class, 'update'])->name('product-prices.update');
     Route::delete('product-prices/{id}', [ProductPriceController::class, 'destroy'])->name('product-prices.destroy');
 });
+
 
 
 

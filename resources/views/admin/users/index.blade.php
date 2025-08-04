@@ -36,15 +36,22 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>
-                            <input type="checkbox"
-                                class="form-check-input toggle-status"
-                                data-id="{{ $user->id }}"
-                                {{ $user->status ? 'checked' : '' }}>
-
-                            <span class="ms-1 badge bg-{{ $user->status ? 'success' : 'danger' }}">
-                                {{ $user->status ? 'Active' : 'Inactive' }}
-                        </span>
+                       <td>
+                            @if ($user->deleted_at)
+                                <span class="badge bg-secondary">Deleted</span>
+                            @else
+                                <div class="form-check form-switch">
+                                    <input type="checkbox"
+                                        class="form-check-input toggle-user-status"
+                                        data-id="{{ $user->id }}"
+                                        {{ $user->status ? 'checked' : '' }}>
+                                    <label class="form-check-label ms-2">
+                                        <span class="badge status-badge bg-{{ $user->status ? 'success' : 'danger' }}">
+                                            {{ $user->status ? 'Active' : 'Inactive' }}
+                                        </span>
+                                    </label>
+                                </div>
+                            @endif
                         </td>
                         <td>
                             <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">Edit</button>
@@ -108,18 +115,29 @@
     </div>
 <script>
 $(document).ready(function () {
-    $('.toggle-status').on('change', function () {
-        let isChecked = $(this).is(':checked');
-        let status = isChecked ? 1 : 0;
-        let userid = $(this).data('id');
-        let $badge = $(this).next('span');
+    $(document).on('change', '.toggle-user-status', function (e) {
+        e.preventDefault();
+
+        const checkbox = $(this);
+        const isChecked = checkbox.is(':checked');
+        const status = isChecked ? 1 : 0;
+        const userId = checkbox.data('id');
+        const $badge = checkbox.closest('td').find('.status-badge');
+
+        const confirmChange = confirm("Are you sure you want to change the user's status?");
+        if (!confirmChange) {
+            checkbox.prop('checked', !isChecked);
+            return;
+        }
+
+        checkbox.prop('disabled', true);
 
         $.ajax({
-            url: "{{ route('users.toggleStatus') }}",
+            url: "{{ route('users.toggleStatus') }}", // ✅ Correct route
             method: "POST",
             data: {
                 _token: "{{ csrf_token() }}",
-                id: userid,
+                id: userId,
                 status: status
             },
             success: function (response) {
@@ -129,19 +147,19 @@ $(document).ready(function () {
                         .addClass(status ? 'bg-success' : 'bg-danger')
                         .text(status ? 'Active' : 'Inactive');
                 } else {
+                    checkbox.prop('checked', !isChecked);
                     alert("Failed to update status.");
                 }
             },
             error: function () {
-                alert("Error updating status.");
+                checkbox.prop('checked', !isChecked);
+                alert("Error occurred while updating status.");
+            },
+            complete: function () {
+                checkbox.prop('disabled', false);
             }
         });
     });
-
-    // Success alert ko 3 seconds baad hide karne ka code
-    setTimeout(function() {
-        $('#success-alert').fadeOut('slow');
-    }, 3000);
 });
 </script>
 @endsection

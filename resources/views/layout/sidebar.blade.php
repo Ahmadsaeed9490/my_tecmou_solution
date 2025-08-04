@@ -1,14 +1,17 @@
 <div class="sidebar pb-3">
     <nav class="navbar navbar-light">
-        <a href="{{ route('dashboard') }}" class="navbar-brand ms-3" style="font-size: 40px; margin-right: 30px;">
-            <img src="{{asset('assets/img/logo1.png')}}" alt=""> </a>
+   <div class="d-flex justify-content-center align-items-center" style="height: 80px;">
+    <a href="{{ route('dashboard') }}" class="navbar-brand">
+        <img src="{{ asset('assets/img/logo1.png') }}" alt="Logo" style="width: 90px; height: auto;">
+    </a>
+</div>
         <div class="navbar-nav">
-            <a href="{{ route('dashboard') }}" class="nav-item nav-link active text-center border-top">
+            <a href="{{ route('dashboard') }}" class="nav-item nav-link  text-center border-top">
                 <i class="bi bi-grid"></i>
                 <p class="pt-1 mb-0">Dashboard</p>
             </a>
             <a href="{{ route('admin.users.index') }}" class="nav-item nav-link  text-center border-top">
-            <i class="bi bi-person"></i>
+                <i class="bi bi-person"></i>
                 <p class="pt-1 mb-0">User</p>
             </a>
 
@@ -22,59 +25,21 @@
 
             <a href="{{ route('admin.brands.index') }}" class="nav-item nav-link  text-center border-top">
                 <i class="bi bi-tag-fill"></i>
-                <p class="pt-1 mb-0">
                     <p class="pt-1 mb-0">Brands</p>
-                </p>
             </a>
 
-             <a href="{{ route('admin.products.index') }}" class="nav-item nav-link  text-center border-top">
-              <i class="bi bi-cart"></i>	
+            <a href="{{ route('admin.products.index') }}" class="nav-item nav-link  text-center border-top">
+                <i class="bi bi-cart"></i>
                 <p class="pt-1 mb-0">
                     <p class="pt-1 mb-0">products</p>
                 </p>
             </a>
 
-               <a href="{{ route('admin.product-prices.index') }}" class="nav-item nav-link  text-center border-top">
-              <i class="bi bi-tags"></i>
+            <a href="{{ route('admin.product-prices.index') }}" class="nav-item nav-link  text-center border-top">
+                <i class="bi bi-tags"></i>
                 <p class="pt-1 mb-0">
                     <p class="pt-1 mb-0">product-prices</p>
                 </p>
-            </a>
-            <div id="navbar-toggler3" class="nav-item nav-link text-center">
-                <i class="bi bi-file-earmark-text"></i>
-                <p class="pt-1 mb-0">Purchase</p>
-            </div>
-            <div id="navbar-toggler4" class="nav-item nav-link text-center">
-                <i class="bi bi-bag"></i>
-                <p class="pt-1 mb-0">Inventory</p>
-            </div>
-            <div id="navbar-toggler5" class="nav-item nav-link text-center">
-                <i class="bi bi-arrow-90deg-left"></i>
-                <p class="pt-1 mb-0">Transfer</p>
-            </div>
-            <div id="navbar-toggler6" class="nav-item nav-link text-center">
-                <i class="fa-solid fa-wallet"></i>
-                <p class="pt-1 mb-0">Accounting</p>
-            </div>
-            <div id="navbar-toggler7" class="nav-item nav-link text-center">
-                <i class="bi bi-person"></i>
-                <p class="pt-1 mb-0">Customer</p>
-            </div>
-            <div id="navbar-toggler8" class="nav-item nav-link text-center">
-                <i class="bi bi-house"></i>
-                <p class="pt-1 mb-0">Vendors</p>
-            </div>
-            <div id="navbar-toggler9" class="nav-item nav-link text-center">
-                <i class="bi bi-clipboard-data"></i>
-                <p class="pt-1 mb-0">Report</p>
-            </div>
-            <a href="shipment.html" class="nav-item nav-link text-center">
-                <i class="bi bi-clipboard-data"></i>
-                <p class="pt-1 mb-0">Shipment</p>
-            </a>
-            <a href="customermanagement.html" class="nav-item nav-link text-center">
-                <i class="bi bi-clipboard-data"></i>
-                <p class="pt-1 mb-0">Add Module</p>
             </a>
             <div id="navbar-toggler10" class="nav-item nav-link text-center">
                 <i class="bi bi-gear"></i>
