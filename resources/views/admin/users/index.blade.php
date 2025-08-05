@@ -133,7 +133,7 @@ $(document).ready(function () {
         checkbox.prop('disabled', true);
 
         $.ajax({
-            url: "{{ route('users.toggleStatus') }}", // ✅ Correct route
+            url: "{{ route('admin.users.toggleStatus') }}", // ✅ Correct route
             method: "POST",
             data: {
                 _token: "{{ csrf_token() }}",

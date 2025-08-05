@@ -53,7 +53,7 @@
     <div id="product" style="display: none">
         <ul class="list-unstyled m-0 px-4 rounded-5">
             <li>
-                <a href="" class="text-decoration-none nav-item nav-link"><img src="{{ asset('assets/img/menu.svg') }}"
+                <a href="" class="text-decoration-none nav-item nav-link"><img src="{{ asset('assets/img/menu.svg') }}" 
                         class="img-fluid me-2" alt="" />All Product</a>
             </li>
             <li class="mb-2">

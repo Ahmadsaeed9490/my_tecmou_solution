@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('product_prices', function (Blueprint $table) {
             $table->id(); // <== yeh default primary key hai
-            $table->unsignedBigInteger('product_id'); // foreign key
+            $table->unsignedBigInteger('product_id')->unique();
 
             $table->decimal('min_price', 10, 2);
             $table->decimal('max_price', 10, 2);

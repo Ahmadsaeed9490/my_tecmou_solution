@@ -1,3 +1,11 @@
+<style>
+    .ck-editor__editable_inline {
+        min-height: 300px;
+    }
+</style>
+
+
+
 <input type="hidden" name="id" id="edit-id">
 
 <div class="col-md-6">
@@ -69,9 +77,10 @@
   </select>
 </div>
 
-<div class="col-md-12">
-  <label>Description</label>
-  <textarea name="description" id="edit-description" class="form-control" rows="3">{{ $product->description ?? '' }}</textarea>
+<!-- Edit Product Modal -->
+<div class="col-12">
+    <label>Description</label>
+    <textarea name="description" id="editProductDescription" class="form-control">{{ old('description') }}</textarea>
 </div>
 
 <div class="col-md-12">
@@ -94,6 +103,42 @@
   <input type="file" name="gallery_images[]" multiple class="form-control" accept="image/*">
 </div>
 
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+let editCategoryEditor = null;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const editModal = document.getElementById('editProductModal'); // ensure this matches your modal ID
+
+    if (editModal) {
+        editModal.addEventListener('shown.bs.modal', function () {
+            const editorElement = document.querySelector('#editCategoryDescription');
+
+            if (!editorElement) return;
+
+            if (editCategoryEditor) {
+                editCategoryEditor.destroy()
+                    .then(() => createEditCategoryEditor(editorElement))
+                    .catch(error => console.error(error));
+            } else {
+                createEditCategoryEditor(editorElement);
+            }
+        });
+    }
+});
+
+function createEditCategoryEditor(element) {
+    ClassicEditor
+        .create(element)
+        .then(editor => {
+            editCategoryEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+</script>
 <script>
 $(document).ready(function () {
   // Initialize global flag if not exists

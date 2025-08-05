@@ -12,22 +12,10 @@ class BrandController extends Controller
     
     public function index()
 {
-    $brands = Brand::all();
+    $brands = Brand::withTrashed()->get();
     $brand = new Brand(); // Empty instance for the create modal
     return view('admin.brands.index', compact('brands', 'brand'));
 }
-
-
-public function edit($id)
-{
-    $brand = Brand::findOrFail($id);
-    $brand->logo_url = $brand->logo ? asset('storage/' . $brand->logo) : null;
-
-    return response()->json($brand);
-}
-
-
-
 
    public function store(Request $request)
 {
@@ -43,7 +31,6 @@ public function edit($id)
     $brand->description = $request->input('description');
     $brand->website = $request->input('website');
     $brand->status = $request->input('status');
-    $brand->sort_order = $request->input('sort_order');
 
     if ($request->hasFile('logo')) {
         // Set destination to public/storage/brands
@@ -69,11 +56,14 @@ public function edit($id)
 }
 
 
-    public function edit($id)
-    {
-        $brand = Brand::find($id);
-        return response()->json($brand);
-    }
+   public function edit($id)
+{
+    $brand = Brand::findOrFail($id);
+    $brand->logo_url = $brand->logo ? asset('storage/' . $brand->logo) : null;
+
+    return response()->json($brand);
+}
+
 
     public function update(Request $request, $id)
 {
@@ -89,7 +79,6 @@ public function edit($id)
     $brand->description = $request->input('description');
     $brand->website = $request->input('website');
     $brand->status = $request->input('status');
-    $brand->sort_order = $request->input('sort_order');
 
     if ($request->hasFile('logo')) {
         // Delete old logo if exists
@@ -120,7 +109,8 @@ public function edit($id)
 
 public function toggleStatus(Request $request)
 {
-    $brand = brand::find($request->id);
+Log::info('Toggle Status Request:', $request->all());
+    $brand = Brand::find($request->id);
 
     if ($brand) {
         $brand->status = $request->status;
@@ -129,6 +119,7 @@ public function toggleStatus(Request $request)
     }
     return response()->json(['success' => false]);
 }
+
 
     public function destroy($id)
     {

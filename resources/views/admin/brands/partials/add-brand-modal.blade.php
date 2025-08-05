@@ -1,43 +1,57 @@
 
-<div class="row g-3">
-    <div class="col-md-6">
-        <label>Name</label>
-        <input type="text" name="name" id="nameInput" class="form-control" value="{{ old('name', $brand->name) }}" required>
-    </div>
+    <style>
+/* Optional: improve the toggle UI */
+.form-check-input {
+    cursor: pointer;
+    transform: scale(1.2);
+}
 
-    <div class="col-md-6">
-        <label>Slug</label>
-        <input type="text" name="slug" id="slugInput" class="form-control" value="{{ old('slug', $brand->slug) }}">
-    </div>
+     .ck-editor__editable_inline {
+        min-height: 300px; /* Adjust as needed */
+    }
+</style>
 
-    <div class="col-12">
-        <label>Description</label>
-        <textarea name="description" class="form-control" rows="3">{{ old('description', $brand->description) }}</textarea>
-    </div>
 
-    <div class="col-md-6">
-        <label>Website</label>
-        <input type="url" name="website" class="form-control" value="{{ old('website', $brand->website) }}">
-    </div>
+<div class="col-md-6">
+    <label>Name</label>
+    <input type="text" name="name" class="form-control" required>
+</div>
+<div class="col-md-6">
+    <label>Slug</label>
+    <input type="text" name="slug" class="form-control">
+</div>
+<div class="col-12">
+    <label>Description</label>
+    <textarea name="description" id="descriptionEditor" class="form-control">{{ old('description', $brand->description) }}</textarea>
+</div>
 
-    <div class="col-md-6">
-        <label>Sort Order</label>
-        <input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', $brand->sort_order ?? 0) }}">
-    </div>
-
-    <div class="col-md-6">
-        <label>Status</label>
-        <select name="status" class="form-control" required>
-            <option value="1" {{ old('status', $brand->status) == 1 ? 'selected' : '' }}>Active</option>
-            <option value="0" {{ old('status', $brand->status) == 0 ? 'selected' : '' }}>Inactive</option>
-        </select>
-    </div>
+<div class="col-md-6">
+    <label>Website</label>
+    <input type="url" name="website" class="form-control">
+</div>
+<div class="mb-3">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-control @error('status') is-invalid @enderror">
+        <option value="1" {{ old('status', $brand->status ?? 1) == 1 ? 'selected' : '' }}>Active</option>
+        <option value="0" {{ old('status', $brand->status ?? 1) == 0 ? 'selected' : '' }}>Inactive</option>
+    </select>
+    @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+</div>
 
 <div class="col-md-6">
     <label>Logo</label>
     <input type="file" name="logo" class="form-control" accept="image/*" onchange="previewLogo(this)">
     <img id="logoPreview" src="#" class="mt-2 d-none border rounded" width="60" height="60">
 </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#descriptionEditor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
 
 <script>
     function previewLogo(input) {
