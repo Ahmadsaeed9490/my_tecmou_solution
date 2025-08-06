@@ -1,13 +1,13 @@
+<style>
+    /* Optional: improve the toggle UI */
+    .form-check-input {
+        cursor: pointer;
+        transform: scale(1.2);
+    }
 
-    <style>
-/* Optional: improve the toggle UI */
-.form-check-input {
-    cursor: pointer;
-    transform: scale(1.2);
-}
-
-     .ck-editor__editable_inline {
-        min-height: 300px; /* Adjust as needed */
+    .ck-editor__editable_inline {
+        min-height: 300px;
+        /* Adjust as needed */
     }
 </style>
 
@@ -35,7 +35,8 @@
 </div>
 <div class="col-12">
     <label>Description</label>
-    <textarea name="description" id="descriptionEditor" class="form-control">{{ old('description', $brand->description) }}</textarea>
+    <textarea name="description" id="descriptionEditor"
+        class="form-control">{{ old('description', $brand->description) }}</textarea>
 </div>
 
 <div class="mb-3">
@@ -60,8 +61,6 @@
             console.error(error);
         });
 </script>
-
-
 <script>
     function previewLogo(input) {
         const preview = document.getElementById('logoPreview');

@@ -22,7 +22,13 @@
 <!-- Edit Modal -->
 <div class="col-12">
     <label>Description</label>
-    <textarea name="description" id="editDescriptionEditor" class="form-control">{{ old('description') }}</textarea>
+    <textarea name="description" id="editDescriptionEditor" class="form-control">{{ old('description', $category->description ?? '') }}</textarea>
+</div>
+
+
+<div class="col-md-6">
+    <label>Website</label>
+    <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
 </div>
 
 <div class="mb-3">
@@ -43,38 +49,63 @@
 </div>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-let editEditorInstance = null;
+    let createEditorInstance;
+    let editEditorInstance;
 
-document.addEventListener('DOMContentLoaded', function () {
-    const editModal = document.getElementById('editBrandModal');
-
-    editModal.addEventListener('shown.bs.modal', function () {
-        const editorElement = document.querySelector('#editDescriptionEditor');
-
-        // Destroy previous instance (if already exists)
-        if (editEditorInstance) {
-            editEditorInstance.destroy()
-                .then(() => {
-                    createEditEditor(editorElement);
+    // Create CKEditor for "Create Modal"
+    function initCreateEditor() {
+        const el = document.querySelector('#createDescriptionEditor');
+        if (el && !createEditorInstance) {
+            ClassicEditor
+                .create(el)
+                .then(editor => {
+                    createEditorInstance = editor;
                 })
-                .catch(error => console.error(error));
-        } else {
-            createEditEditor(editorElement);
+                .catch(error => {
+                    console.error('Create CKEditor error:', error);
+                });
         }
-    });
-});
+    }
 
-function createEditEditor(editorElement) {
-    ClassicEditor
-        .create(editorElement)
-        .then(editor => {
-            editEditorInstance = editor;
-        })
-        .catch(error => {
-            console.error(error);
+    // Create or Refresh CKEditor for "Edit Modal"
+    function initEditEditor() {
+        const el = document.querySelector('#editDescriptionEditor');
+        if (el) {
+            if (editEditorInstance) {
+                // Destroy and recreate to avoid duplication
+                editEditorInstance.destroy()
+                    .then(() => {
+                        ClassicEditor.create(el)
+                            .then(editor => {
+                                editEditorInstance = editor;
+                            });
+                    });
+            } else {
+                ClassicEditor
+                    .create(el)
+                    .then(editor => {
+                        editEditorInstance = editor;
+                    })
+                    .catch(error => {
+                        console.error('Edit CKEditor error:', error);
+                    });
+            }
+        }
+    }
+
+    // Run on page ready
+    document.addEventListener("DOMContentLoaded", function () {
+        // Init Create CKEditor immediately
+        initCreateEditor();
+
+        // Init/Edit CKEditor every time edit modal opens
+        $('#editCategoryModal').on('shown.bs.modal', function () {
+            initEditEditor();
         });
-}
+    });
 </script>
+
+
 
 
 <script>
