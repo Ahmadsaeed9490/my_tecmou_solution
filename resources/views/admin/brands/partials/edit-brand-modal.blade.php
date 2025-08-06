@@ -15,17 +15,14 @@
     <label>Slug</label>
     <input type="text" name="slug" id="edit-brand-slug" class="form-control" value="{{ $brand->slug ?? '' }}">
 </div>
-
+<div class="col-md-6">
+    <label>Website</label>
+    <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
+</div>
 <!-- Edit Modal -->
 <div class="col-12">
     <label>Description</label>
     <textarea name="description" id="editDescriptionEditor" class="form-control">{{ old('description') }}</textarea>
-</div>
-
-
-<div class="col-md-6">
-    <label>Website</label>
-    <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
 </div>
 
 <div class="mb-3">
