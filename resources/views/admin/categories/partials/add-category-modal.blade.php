@@ -3,6 +3,10 @@
 .form-check-input {
     cursor: pointer;
     transform: scale(1.2);
+    
+}
+.ck-editor__editable_inline {
+        min-height: 300px;
 }
 </style>
 
@@ -16,13 +20,12 @@
   <input type="text" name="slug" class="form-control">
 </div>
 
-<!-- Create Category Modal -->
 <div class="col-12">
     <label>Description</label>
-    <textarea name="description" id="createCategoryDescription" class="form-control">{{ old('description') }}</textarea>
+    <textarea name="description" id="descriptionEditor" class="form-control">
+        {{ old('description', $category->description ?? '') }}
+    </textarea>
 </div>
-
-
 <div class="mb-3">
   <label for="image" class="form-label">Image</label>
   <input type="file" name="image" class="form-control">
@@ -35,12 +38,7 @@
         <option value="0" {{ old('status', $brand->status ?? 1) == 0 ? 'selected' : '' }}>Inactive</option>
     </select>
     @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
-</div>
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 1d06d67caf76ba69fa6956adbc311bec1a33c04d
+  </div>
 <div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>
   <select name="parent_id" class="form-control">
@@ -52,7 +50,13 @@
 </div>
 <!-- CKEditor 5 CDN -->
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
-
+<script>
+    ClassicEditor
+        .create(document.querySelector('#descriptionEditor'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
 
 <script>
   $(document).ready(function () {
