@@ -1,3 +1,9 @@
+<style>
+    .ck-editor__editable_inline {
+        min-height: 300px;
+    }
+</style>
+
 <input type="hidden" name="id" id="edit-brand-id" value="{{ $brand->id ?? '' }}">
 
 <div class="col-md-6">
@@ -10,10 +16,12 @@
     <input type="text" name="slug" id="edit-brand-slug" class="form-control" value="{{ $brand->slug ?? '' }}">
 </div>
 
+<!-- Edit Modal -->
 <div class="col-12">
     <label>Description</label>
-    <textarea name="description" id="edit-brand-description" class="form-control">{{ $brand->description ?? '' }}</textarea>
+    <textarea name="description" id="editDescriptionEditor" class="form-control">{{ old('description') }}</textarea>
 </div>
+
 
 <div class="col-md-6">
     <label>Website</label>
@@ -36,6 +44,41 @@
          class="mt-2 {{ isset($brand) && $brand->logo ? '' : 'd-none' }} border rounded"
          width="60" height="60">
 </div>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+let editEditorInstance = null;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const editModal = document.getElementById('editBrandModal');
+
+    editModal.addEventListener('shown.bs.modal', function () {
+        const editorElement = document.querySelector('#editDescriptionEditor');
+
+        // Destroy previous instance (if already exists)
+        if (editEditorInstance) {
+            editEditorInstance.destroy()
+                .then(() => {
+                    createEditEditor(editorElement);
+                })
+                .catch(error => console.error(error));
+        } else {
+            createEditEditor(editorElement);
+        }
+    });
+});
+
+function createEditEditor(editorElement) {
+    ClassicEditor
+        .create(editorElement)
+        .then(editor => {
+            editEditorInstance = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+</script>
+
 
 <script>
     // Auto-generate slug from name

@@ -8,9 +8,6 @@
         @if(session('success'))
             <div class="alert alert-success" id="success-alert">{{ session('success') }}</div>
         @endif
-
-        
-
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
@@ -20,14 +17,9 @@
                 </ul>
             </div>
         @endif
-
-        
-
         <div class="text-end my-3">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</button>
         </div>
-
-
         <!-- User Table -->
         <table class="table table-bordered">
             <thead>
@@ -67,13 +59,13 @@
                          <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="d-inline">
                         @csrf @method('DELETE')
                         <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">Delete</button>
+
                          </form>
+
+               </form>
+
                         </td>
                     </tr>
-
-
-                    
-                  
                     <!-- Edit User Modal -->
 <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -146,7 +138,7 @@ $(document).ready(function () {
         checkbox.prop('disabled', true);
 
         $.ajax({
-            url: "{{ route('users.toggleStatus') }}", // ✅ Correct route
+            url: "{{ route('admin.users.toggleStatus') }}", // ✅ Correct route
             method: "POST",
             data: {
                 _token: "{{ csrf_token() }}",

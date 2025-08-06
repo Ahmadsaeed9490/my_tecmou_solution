@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Brand extends Model
 {
         use SoftDeletes; // ✅ enable soft deletes
+        protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'name',
@@ -16,7 +17,7 @@ class Brand extends Model
         'logo',
         'website',
         'status',
-
+        'sort_order',
         'created_by',
         'updated_by',
     ];

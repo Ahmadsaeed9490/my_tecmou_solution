@@ -8,6 +8,12 @@
         </ul>
     </div>
 @endif
+<style>
+    .ck-editor__editable_inline {
+        min-height: 300px;
+    }
+</style>
+
 
 <div class="mb-3">
     <label class="form-label">Name <span class="text-danger">*</span></label>
@@ -64,8 +70,10 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Description</label>
-    <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="3">{{ old('description') }}</textarea>
+    <!-- Create Product Modal -->
+<div class="col-12">
+    <label>Description</label>
+    <textarea name="description" id="createProductDescription" class="form-control">{{ old('description') }}</textarea>
     @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 
@@ -133,6 +141,57 @@
     @error('gallery_images') <div class="invalid-feedback">{{ $message }}</div> @enderror
     @error('gallery_images.*') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
+<!-- CKEditor CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+<script>
+    let createProductEditor = null;
+    let editProductEditor = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize Create CKEditor
+        const createEl = document.querySelector('#createProductDescription');
+        if (createEl) {
+            ClassicEditor
+                .create(createEl)
+                .then(editor => {
+                    createProductEditor = editor;
+                })
+                .catch(error => console.error(error));
+        }
+
+        // Initialize Edit CKEditor only when modal is opened
+        const editModal = document.getElementById('editProductModal');
+        if (editModal) {
+            editModal.addEventListener('shown.bs.modal', function () {
+                const editEl = document.querySelector('#editProductDescription');
+
+                // Destroy old editor if exists
+                if (editProductEditor) {
+                    editProductEditor.destroy()
+                        .then(() => {
+                            initEditProductEditor(editEl);
+                        })
+                        .catch(error => console.error(error));
+                } else {
+                    initEditProductEditor(editEl);
+                }
+            });
+        }
+    });
+
+    function initEditProductEditor(element) {
+        ClassicEditor
+            .create(element)
+            .then(editor => {
+                editProductEditor = editor;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+</script>
+
 <script>
   $(document).ready(function () {
     $('#edit-name').on('input', function () {

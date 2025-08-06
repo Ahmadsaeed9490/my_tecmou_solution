@@ -14,14 +14,16 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category', 'brand')->orderBy('id', 'desc')->get();
+        $products = Product::with(['category', 'brand'])
+                    ->withTrashed() // this will include soft-deleted products
+                    ->orderBy('id', 'desc')
+                    ->get();
+
         $categories = Category::all();
         $brands = Brand::all();
 
         return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
-
-
 
     public function store(Request $request)
     {
@@ -91,8 +93,6 @@ class ProductController extends Controller
                 ->with('error', 'Failed to create product. Please try again. Error: ' . $e->getMessage());
         }
     }
-
-
     public function edit($id)
     {
         try {
@@ -177,38 +177,21 @@ class ProductController extends Controller
     return response()->json(['success' => false]);
 }
     public function destroy($id)
-    {
-        try {
-            $product = Product::findOrFail($id);
+{
+    try {
+        $product = Product::findOrFail($id);
 
-            // Delete thumbnail
-            if ($product->thumbnail && Storage::disk('public')->exists($product->thumbnail)) {
-                Storage::disk('public')->delete($product->thumbnail);
-            }
+        // Optionally delete images if needed...
+        // Storage::disk('public')->delete(...);
 
-            // Delete gallery images
-            if ($product->gallery_images) {
-                $images = json_decode($product->gallery_images, true);
-                if (is_array($images)) {
-                    foreach ($images as $img) {
-                        if (Storage::disk('public')->exists($img)) {
-                            Storage::disk('public')->delete($img);
-                        }
-                    }
-                }
-            }
+        $product->delete();
 
-            $product->delete();
+        return response()->json(['success' => true]);
 
-            return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
-
-        } catch (\Exception $e) {
-            Log::error('Product deletion failed: ' . $e->getMessage(), [
-                'product_id' => $id,
-                'exception' => $e
-            ]);
-
-            return redirect()->back()->with('error', 'Failed to delete product. Please try again.');
-        }
+    } catch (\Exception $e) {
+        Log::error('Product deletion failed', ['error' => $e->getMessage()]);
+        return response()->json(['success' => false], 500);
     }
+}
+
 }

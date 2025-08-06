@@ -11,10 +11,11 @@ class BrandController extends Controller
 {
     
     public function index()
-    {
-        $brands = Brand::withTrashed()->get();
-        return view('admin.brands.index', compact('brands'));
-    }
+{
+    $brands = Brand::withTrashed()->get();
+    $brand = new Brand(); // Empty instance for the create modal
+    return view('admin.brands.index', compact('brands', 'brand'));
+}
 
    public function store(Request $request)
 {
@@ -30,7 +31,7 @@ class BrandController extends Controller
     $brand->description = $request->input('description');
     $brand->website = $request->input('website');
     $brand->status = $request->input('status');
-
+    $brand->sort_order = $request->input('sort_order');
 
     if ($request->hasFile('logo')) {
         // Set destination to public/storage/brands
@@ -56,11 +57,14 @@ class BrandController extends Controller
 }
 
 
-    public function edit($id)
-    {
-        $brand = Brand::find($id);
-        return response()->json($brand);
-    }
+   public function edit($id)
+{
+    $brand = Brand::findOrFail($id);
+    $brand->logo_url = $brand->logo ? asset('storage/' . $brand->logo) : null;
+
+    return response()->json($brand);
+}
+
 
     public function update(Request $request, $id)
 {
@@ -106,23 +110,16 @@ class BrandController extends Controller
 
 public function toggleStatus(Request $request)
 {
-    \Log::info('Toggle Request:', $request->all()); // DEBUG
-
+Log::info('Toggle Status Request:', $request->all());
     $brand = Brand::find($request->id);
 
     if ($brand) {
         $brand->status = $request->status;
         $brand->save();
-
-        \Log::info('Updated Brand Status:', ['id' => $brand->id, 'status' => $brand->status]);
-
         return response()->json(['success' => true]);
     }
-
-    \Log::error('Brand Not Found:', ['id' => $request->id]);
     return response()->json(['success' => false]);
 }
-
 
 
     public function destroy($id)

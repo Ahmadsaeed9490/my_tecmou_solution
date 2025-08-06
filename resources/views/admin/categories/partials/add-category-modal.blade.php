@@ -16,10 +16,12 @@
   <input type="text" name="slug" class="form-control">
 </div>
 
-<div class="mb-3">
-  <label for="description" class="form-label">Description</label>
-  <textarea name="description" class="form-control"></textarea>
+<!-- Create Category Modal -->
+<div class="col-12">
+    <label>Description</label>
+    <textarea name="description" id="createCategoryDescription" class="form-control">{{ old('description') }}</textarea>
 </div>
+
 
 <div class="mb-3">
   <label for="image" class="form-label">Image</label>
@@ -35,6 +37,10 @@
     @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1d06d67caf76ba69fa6956adbc311bec1a33c04d
 <div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>
   <select name="parent_id" class="form-control">
@@ -44,6 +50,9 @@
     @endforeach
   </select>
 </div>
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
 
 <script>
   $(document).ready(function () {

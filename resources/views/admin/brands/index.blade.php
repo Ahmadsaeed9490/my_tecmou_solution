@@ -53,18 +53,44 @@
                                 @endif
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}"
-                                    data-bs-toggle="modal" data-bs-target="#editBrandModal">Edit</button>
-                                <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure?')">Delete</button>
-                                </form>
+                                @if (!$brand->deleted_at)
+    <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}" >Edit</button>
+
+    <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
+        @csrf @method('DELETE')
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+    </form>
+@else
+    <span class="text-muted">No Actions</span>
+@endif
+
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+
+     <!-- Edit Modal -->
+    <div class="modal fade" id="editBrandModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form method="POST" id="editBrandForm" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT') <!-- Use PUT method directly -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Brand</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body row g-3">
+                        @include('admin.brands.partials.edit-brand-modal')
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update Brand</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -88,50 +114,35 @@
         </div>
     </div>
 
-    <!-- Edit Modal -->
-    <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <form id="editBrandForm" method="POST"
-                action="{{ isset($brand) ? route('admin.brands.update', $brand->id) : '#' }}" enctype="multipart/form-data"
-                class="modal-content">
-                @csrf
-                @method('PUT')
-                <!-- The form will be populated via AJAX -->
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Brand</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body row g-3">
-                    @include('admin.brands.partials.edit-brand-modal')
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Update Brand</button>
-                </div>
-            </form>
-        </div>
-    </div>
+   
 
+    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    @push('scripts')
         <script>
-            $(document).ready(function () {
-                // Edit button click
-                $('.editBrandBtn').on('click', function () {
-                    const brandId = $(this).data('id');
+$(document).ready(function () {
+    // Prevent modal from closing on outside click
+    $('#editBrandModal').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+    
+    // Edit button click
+    $('.editBrandBtn').on('click', function (e) {
+        e.preventDefault();
+        const brandId = $(this).data('id');
+        
+        $.ajax({
+            url: '/admin/brands/' + brandId + '/edit',
+            type: 'GET',
+            success: function (brand) {
+                if (!brand.id) {
+                    console.error("No ID returned in response.", brand);
+                    return;
+                }
 
-                    $.ajax({
-                        url: '/admin/brands/' + brandId + '/edit',
-                        type: 'GET',
-                        success: function (brand) {
-                            if (!brand.id) {
-                                console.error("No ID returned in response.", brand);
-                                return;
-                            }
-
-                            // Set form action to correct PUT route
-                            const actionUrl = '/admin/brands/' + brand.id;
-                            $('#editBrandForm').attr('action', actionUrl);
-                            console.log("Form action set to:", actionUrl);
+                // Set form action using Laravel route
+                const actionUrl = `/admin/brands/${brand.id}`;
+                $('#editBrandForm').attr('action', actionUrl);
 
                             // Populate form fields
                             $('#editBrandForm input[name="name"]').val(brand.name);
@@ -139,55 +150,28 @@
                             $('#editBrandForm textarea[name="description"]').val(brand.description);
                             $('#editBrandForm input[name="website"]').val(brand.website);
                             $('#editBrandForm select[name="status"]').val(brand.status);
+                            $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
 
+                // Preview logo
+                if (brand.logo) {
+                    $('#editBrandLogoPreview')
+                        .attr('src', '/storage/' + brand.logo)
+                        .removeClass('d-none')
+                        .show();
+                } else {
+                    $('#editBrandLogoPreview').addClass('d-none').hide();
+                }
 
-                            // Preview logo
-                            if (brand.logo) {
-                                $('#editBrandLogoPreview')
-                                    .attr('src', '/storage/' + brand.logo)
-                                    .removeClass('d-none')
-                                    .show();
-                            } else {
-                                $('#editBrandLogoPreview').addClass('d-none').hide();
-                            }
-                            // Show modal
-                            $('#editBrandModal').modal('show');
-                        },
-                        error: function (xhr) {
-                            console.error("Error fetching brand:", xhr.responseText);
-                        }
-                    });
-                });
-
-                // Auto-generate slug when name changes (create & edit)
-                $(document).on('input', '#editBrandForm input[name="name"], #nameInput', function () {
-                    let slug = $(this).val()
-                        .toLowerCase()
-                        .trim()
-                        .replace(/[^a-z0-9\s-]/g, '')
-                        .replace(/\s+/g, '-')
-                        .replace(/-+/g, '-');
-                    $('#editBrandForm input[name="slug"], #slugInput').val(slug);
-                });
-
-                // Preview logo image (edit form)
-                $(document).on('change', '#editBrandForm input[name="logo"]', function () {
-                    const preview = document.getElementById('editBrandLogoPreview');
-                    if (this.files && this.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            preview.src = e.target.result;
-                            preview.classList.remove('d-none');
-                            preview.style.display = 'block';
-                        };
-                        reader.readAsDataURL(this.files[0]);
-                    }
-                });
-
-            });
-        </script>
-
-    @endpush
+                // Show modal
+                $('#editBrandModal').modal('show');
+            },
+            error: function (xhr) {
+                console.error("Error fetching brand:", xhr.responseText);
+            }
+        });
+    });
+});
+</script>
 <script>
 $(document).ready(function () {
     $(document).on('change', '.toggle-brand-status', function (e) {
@@ -240,4 +224,8 @@ $(document).ready(function () {
     });
 });
 </script>
+
+    
+
+
 @endsection

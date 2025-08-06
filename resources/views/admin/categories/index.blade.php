@@ -44,15 +44,16 @@
                     @else
                         <div class="form-check form-switch">
                             <input type="checkbox"
-                                  class="form-check-input toggle-status"
-                                  data-id="{{ $category->id }}"
-                                  {{ $category->status ? 'checked' : '' }}>
+                                class="form-check-input toggle-category-status"
+                                data-id="{{ $category->id }}"
+                                {{ $category->status ? 'checked' : '' }}>
                             <label class="form-check-label ms-2">
                                 <span class="badge status-badge bg-{{ $category->status ? 'success' : 'danger' }}">
                                     {{ $category->status ? 'Active' : 'Inactive' }}
                                 </span>
                             </label>
                         </div>
+
                     @endif
                 </td>
                       <td>
@@ -199,49 +200,59 @@
   });
 </script>
 <script>
-$(document).ready(function () {
-    $('.toggle-status').on('change', function () {
+    $(document).on('change', '.toggle-category-status', function () {
         const checkbox = $(this);
-        const isChecked = checkbox.is(':checked');
-        const status = isChecked ? 1 : 0;
         const categoryId = checkbox.data('id');
-        const $badge = checkbox.closest('td').find('.status-badge');
+        const newStatus = checkbox.is(':checked') ? 1 : 0;
+        const badge = checkbox.closest('div').find('.status-badge');
 
-        // Disable the checkbox temporarily to prevent double clicks
+        // Confirm alert
+        const confirmMsg = newStatus
+            ? "Are you sure you want to activate this category?"
+            : "Are you sure you want to deactivate this category?";
+
+        if (!confirm(confirmMsg)) {
+            // User cancelled, revert checkbox
+            checkbox.prop('checked', !checkbox.is(':checked'));
+            return;
+        }
+
+        // Disable switch while processing
         checkbox.prop('disabled', true);
 
         $.ajax({
-            url: "{{ route('categories.toggleStatus') }}",
-            method: "POST",
+            url: "{{ route('admin.categories.toggleStatus') }}", // ✅ Make sure this route exists
+            method: 'POST',
             data: {
                 _token: "{{ csrf_token() }}",
                 id: categoryId,
-                status: status
+                status: newStatus
             },
             success: function (response) {
                 if (response.success) {
-                    $badge
+                    // Update badge
+                    badge
                         .removeClass('bg-success bg-danger')
-                        .addClass(status ? 'bg-success' : 'bg-danger')
-                        .text(status ? 'Active' : 'Inactive');
+                        .addClass(newStatus ? 'bg-success' : 'bg-danger')
+                        .text(newStatus ? 'Active' : 'Inactive');
+
+                    alert("Status updated successfully.");
                 } else {
-                    // Rollback checkbox if failed
-                    checkbox.prop('checked', !isChecked);
-                    alert("Failed to update status.");
+                    alert("Status update failed.");
+                    checkbox.prop('checked', !newStatus); // Revert
                 }
             },
             error: function () {
-                // Rollback checkbox if error
-                checkbox.prop('checked', !isChecked);
-                alert("Error updating status.");
+                alert("Something went wrong. Try again.");
+                checkbox.prop('checked', !newStatus); // Revert
             },
             complete: function () {
                 checkbox.prop('disabled', false);
             }
         });
     });
-});
 </script>
+
 
 
 @endsection

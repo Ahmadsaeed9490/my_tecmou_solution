@@ -32,7 +32,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+            $table->softDeletes(); // adds deleted_at column
 
             // Foreign key constraints
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
