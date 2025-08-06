@@ -16,7 +16,8 @@
                     <tr>
                         <th>#</th>
                         <th>Logo</th>
-                        <th>Name</th>
+                        <th>Category_Name</th>
+                        <th>Brand_Name</th>
                         <th>Slug</th>
                         <th>Website</th>
                         <th>Status</th>
@@ -34,6 +35,7 @@
                                     <span class="text-muted">No Logo</span>
                                 @endif
                             </td>
+                            <td>{{ $brand->category->name ?? 'N/A' }}</td>
                             <td>{{ $brand->name }}</td>
                             <td>{{ $brand->slug }}</td>
                             <td><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></td>
@@ -224,8 +226,13 @@ $(document).ready(function () {
     });
 });
 </script>
-
-    
-
-
+<script>
+    setTimeout(function () {
+        var alert = document.getElementById('success-alert');
+        if (alert) {
+            alert.classList.add('fade-out');
+            setTimeout(() => alert.style.display = 'none', 500); // wait for fade out
+        }
+    }, 2000);
+</script>
 @endsection

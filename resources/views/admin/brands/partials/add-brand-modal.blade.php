@@ -12,6 +12,15 @@
 </style>
 
 
+  <div class="col-md-6">
+            <label for="category_id">Category</label>
+            <select name="category_id" class="form-control" required>
+                <option value="">Select Category</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
 <div class="col-md-6">
     <label>Name</label>
     <input type="text" name="name" class="form-control" required>
@@ -20,16 +29,16 @@
     <label>Slug</label>
     <input type="text" name="slug" class="form-control">
 </div>
+<div class="col-md-6">
+    <label>Website</label>
+    <input type="url" name="website" class="form-control">
+</div>
 <div class="col-12">
     <label>Description</label>
     <textarea name="description" id="descriptionEditor"
         class="form-control">{{ old('description', $brand->description) }}</textarea>
 </div>
 
-<div class="col-md-6">
-    <label>Website</label>
-    <input type="url" name="website" class="form-control">
-</div>
 <div class="mb-3">
     <label class="form-label">Status</label>
     <select name="status" class="form-control @error('status') is-invalid @enderror">
