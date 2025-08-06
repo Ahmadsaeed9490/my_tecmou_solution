@@ -16,7 +16,7 @@ class Brand extends Model
         'logo',
         'website',
         'status',
-        'sort_order',
+
         'created_by',
         'updated_by',
     ];

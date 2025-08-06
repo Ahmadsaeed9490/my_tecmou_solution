@@ -29,10 +29,6 @@
   </select>
 </div>
 
-<div class="mb-3">
-  <label for="sort_order" class="form-label">Sort Order</label>
-  <input type="number" name="sort_order" class="form-control" value="{{ $category->sort_order ?? 0 }}">
-</div>
 
 <div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>

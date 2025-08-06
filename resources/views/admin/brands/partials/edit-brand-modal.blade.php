@@ -20,11 +20,6 @@
     <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
 </div>
 
-<div class="col-md-6">
-    <label>Sort Order</label>
-    <input type="number" name="sort_order" id="edit-brand-sort-order" class="form-control" value="{{ $brand->sort_order ?? 0 }}">
-</div>
-
 <div class="mb-3">
     <label for="status" class="form-label">Status</label>
     <select name="status" id="edit-brand-status" class="form-control" required>

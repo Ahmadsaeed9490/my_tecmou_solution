@@ -22,10 +22,6 @@
     <label>Website</label>
     <input type="url" name="website" class="form-control">
 </div>
-<div class="col-md-6">
-    <label>Sort Order</label>
-    <input type="number" name="sort_order" class="form-control" value="0">
-</div>
 <div class="mb-3">
     <label class="form-label">Status</label>
     <select name="status" class="form-control @error('status') is-invalid @enderror">

@@ -20,7 +20,6 @@
                         <th>Slug</th>
                         <th>Website</th>
                         <th>Status</th>
-                        <th>Sort Order</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -53,7 +52,6 @@
                                     </div>
                                 @endif
                             </td>
-                            <td>{{ $brand->sort_order }}</td>
                             <td>
                                 <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}"
                                     data-bs-toggle="modal" data-bs-target="#editBrandModal">Edit</button>
@@ -141,7 +139,7 @@
                             $('#editBrandForm textarea[name="description"]').val(brand.description);
                             $('#editBrandForm input[name="website"]').val(brand.website);
                             $('#editBrandForm select[name="status"]').val(brand.status);
-                            $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
+
 
                             // Preview logo
                             if (brand.logo) {

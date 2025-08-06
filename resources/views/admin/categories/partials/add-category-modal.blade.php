@@ -36,11 +36,6 @@
 </div>
 
 <div class="mb-3">
-  <label for="sort_order" class="form-label">Sort Order</label>
-  <input type="number" name="sort_order" class="form-control" value="0">
-</div>
-
-<div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>
   <select name="parent_id" class="form-control">
     <option value="">None</option>

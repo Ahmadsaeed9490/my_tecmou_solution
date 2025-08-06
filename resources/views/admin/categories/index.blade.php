@@ -28,7 +28,6 @@
                       <th>Description</th>
                       <th>Status</th>
                       <th>Image</th>
-                      <th>Sort Order</th>
                       <th>Actions</th>
                 </tr>
             </thead>
@@ -61,7 +60,6 @@
                           <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="40">
                         @endif
                       </td>
-                <td>{{ $category->sort_order }}</td>
               <td>
                   @if (!$category->deleted_at)
                       <a href="javascript:void(0)" onclick="editCategory({{ $category->id }})" class="btn btn-sm btn-warning">Edit</a>
@@ -155,7 +153,6 @@
         $('#edit-category-form input[name="name"]').val(data.name);
         $('#edit-category-form input[name="slug"]').val(data.slug);
         $('#edit-category-form textarea[name="description"]').val(data.description);
-        $('#edit-category-form input[name="sort_order"]').val(data.sort_order);
         $('#edit-category-form select[name="status"]').val(data.status);
         $('#edit-category-form select[name="parent_id"]').val(data.parent_id);
         $('#edit_category_Modal').modal('show');

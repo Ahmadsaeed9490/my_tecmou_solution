@@ -19,8 +19,8 @@ return new class extends Migration {
             $table->decimal('discount_percent', 5, 2);
             $table->decimal('final_price', 10, 2);
             $table->string('currency', 10);
-
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });

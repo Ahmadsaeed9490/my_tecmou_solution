@@ -19,7 +19,6 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id')->default(0);
             $table->string('image')->nullable(); // VARCHAR(255)
             $table->tinyInteger('status')->default(0); // default to 0 instead of 1
-            $table->integer('sort_order')->default(0); // INT
             $table->unsignedBigInteger('created_by')->nullable(); // INT
             $table->unsignedBigInteger('updated_by')->nullable(); // INT
             $table->timestamps(); // created_at, updated_at

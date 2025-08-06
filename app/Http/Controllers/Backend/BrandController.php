@@ -30,7 +30,7 @@ class BrandController extends Controller
     $brand->description = $request->input('description');
     $brand->website = $request->input('website');
     $brand->status = $request->input('status');
-    $brand->sort_order = $request->input('sort_order');
+
 
     if ($request->hasFile('logo')) {
         // Set destination to public/storage/brands
@@ -76,7 +76,6 @@ class BrandController extends Controller
     $brand->description = $request->input('description');
     $brand->website = $request->input('website');
     $brand->status = $request->input('status');
-    $brand->sort_order = $request->input('sort_order');
 
     if ($request->hasFile('logo')) {
         // Delete old logo if exists

@@ -31,14 +31,14 @@
             <a href="{{ route('admin.products.index') }}" class="nav-item nav-link  text-center border-top">
                 <i class="bi bi-cart"></i>
                 <p class="pt-1 mb-0">
-                    <p class="pt-1 mb-0">products</p>
+                    <p class="pt-1 mb-0">Products</p>
                 </p>
             </a>
 
             <a href="{{ route('admin.product-prices.index') }}" class="nav-item nav-link  text-center border-top">
                 <i class="bi bi-tags"></i>
                 <p class="pt-1 mb-0">
-                    <p class="pt-1 mb-0">product-prices</p>
+                    <p class="pt-1 mb-0">Product-Prices</p>
                 </p>
             </a>
             <div id="navbar-toggler10" class="nav-item nav-link text-center">

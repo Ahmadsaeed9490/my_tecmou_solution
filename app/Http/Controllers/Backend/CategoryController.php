@@ -23,7 +23,6 @@ class CategoryController extends Controller
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'sort_order' => 'nullable|integer',
             'parent_id' => 'nullable|integer',
             'image' => 'nullable|image|max:2048',
         ]);
@@ -63,7 +62,6 @@ class CategoryController extends Controller
             'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'status' => 'required|boolean',
-            'sort_order' => 'nullable|integer',
             'parent_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|max:2048',
         ]);

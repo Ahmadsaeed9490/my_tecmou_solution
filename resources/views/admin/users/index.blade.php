@@ -1,3 +1,4 @@
+
 @extends('layout.master')
 @section('content')
 
@@ -66,7 +67,7 @@
                          <form method="POST" action="{{ route('admin.users.destroy', $user->id) }}" class="d-inline">
                         @csrf @method('DELETE')
                         <button onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                         </form>
                         </td>
                     </tr>
 
@@ -173,5 +174,14 @@ $(document).ready(function () {
         });
     });
 });
+</script>
+<script>
+    setTimeout(function () {
+        var alert = document.getElementById('success-alert');
+        if (alert) {
+            alert.classList.add('fade-out');
+            setTimeout(() => alert.style.display = 'none', 500); // wait for fade out
+        }
+    }, 4000);
 </script>
 @endsection

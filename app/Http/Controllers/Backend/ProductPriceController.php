@@ -9,13 +9,13 @@ use Illuminate\Http\Request;
 
 class ProductPriceController extends Controller
 {
-    public function index()
-    {
-        $productPrices = ProductPrice::with('product')->get(); // eager load related products
-        $products = Product::all(); // ✅ fetch from Product model
+   public function index()
+{
+    $productPrices = ProductPrice::withTrashed()->with('product')->get();
+    $products = Product::all();
 
-        return view('admin.product-prices.index', compact('productPrices', 'products'));
-    }
+    return view('admin.product-prices.index', compact('productPrices', 'products'));
+}
 
     public function store(Request $request)
     {
@@ -50,18 +50,18 @@ class ProductPriceController extends Controller
         return redirect()->route('admin.product-prices.index')->with('success', 'Price updated successfully.');
     }
 
-  public function edit($id)
-{
-    $price = ProductPrice::findOrFail($id);
+    public function edit($id)
+    {
+        $price = ProductPrice::findOrFail($id);
 
-    return response()->json($price);
-}
+        return response()->json($price);
+    }
 
     public function destroy($id)
     {
         $price = ProductPrice::findOrFail($id);
         $price->delete();
 
-        return response()->json(['success' => true]);
+        return redirect()->back()->with('success', 'Product price soft deleted successfully.');
     }
 }
