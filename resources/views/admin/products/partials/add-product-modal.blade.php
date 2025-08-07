@@ -10,7 +10,7 @@
 @endif
 <style>
     .ck-editor__editable_inline {
-        min-height: 300px;
+        min-height: 150px;
     }
 </style>
 
@@ -77,9 +77,10 @@
     @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 
-<div class="mb-3">
-    <label class="form-label">Specifications</label>
-    <textarea name="specifications" class="form-control @error('specifications') is-invalid @enderror" rows="3">{{ old('specifications') }}</textarea>
+<!-- Inside Add Product Modal -->
+<div class="col-12">
+    <label>Specifications</label>
+    <textarea name="specifications" id="createProductSpecifications" class="form-control">{{ old('specifications') }}</textarea>
     @error('specifications') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 
@@ -143,6 +144,8 @@
 </div>
 <!-- CKEditor CDN -->
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
 
 <script>
     let createProductEditor = null;
@@ -193,18 +196,41 @@
 </script>
 
 <script>
-  $(document).ready(function () {
-    $('#edit-name').on('input', function () {
+let createSpecificationsEditor = null;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const createSpecsEl = document.querySelector('#createProductSpecifications');
+
+    if (createSpecsEl) {
+        ClassicEditor
+            .create(createSpecsEl)
+            .then(editor => {
+                createSpecificationsEditor = editor;
+            })
+            .catch(error => {
+                console.error('CKEditor (create specifications) error:', error);
+            });
+    }
+});
+</script>
+
+
+
+
+<script>
+    // Auto-generate slug from name
+ $(document).ready(function () {
+    $('input[name="name"]').on('input', function () {
       let name = $(this).val();
       let slug = name
         .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, '')  // remove special chars
-        .replace(/\s+/g, '-')          // replace spaces with -
-        .replace(/-+/g, '-')           // collapse multiple -
+        .replace(/[^a-z0-9\s-]/g, '') // remove non-alphanumeric chars
+        .replace(/\s+/g, '-')         // replace spaces with -
+        .replace(/-+/g, '-')          // remove multiple -
         .trim();
 
-      $('#edit-slug').val(slug);
+      $('input[name="slug"]').val(slug);
     });
   });
-</script>
+  </script>
 

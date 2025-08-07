@@ -169,5 +169,25 @@
     });
     });
   </script>
+  <script>
+  function calculateFinalPrice() {
+      let min = parseFloat(document.querySelector('input[name="min_price"]').value) || 0;
+      let max = parseFloat(document.querySelector('input[name="max_price"]').value) || 0;
+      let discount = parseFloat(document.querySelector('input[name="discount_percent"]').value) || 0;
+
+      let avgPrice = (min + max) / 2;
+      let finalPrice = avgPrice - (avgPrice * (discount / 100));
+
+      // Set the calculated final price
+      document.querySelector('input[name="final_price"]').value = finalPrice.toFixed(2);
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+      // Auto calculate when user types in any of the fields
+      document.querySelector('input[name="min_price"]').addEventListener('input', calculateFinalPrice);
+      document.querySelector('input[name="max_price"]').addEventListener('input', calculateFinalPrice);
+      document.querySelector('input[name="discount_percent"]').addEventListener('input', calculateFinalPrice);
+  });
+</script>
 
 @endsection

@@ -1,6 +1,6 @@
 <style>
     .ck-editor__editable_inline {
-        min-height: 300px;
+        min-height: 150px;
     }
 </style>
 
@@ -83,10 +83,12 @@
     <textarea name="description" id="editProductDescription" class="form-control">{{ old('description') }}</textarea>
 </div>
 
+<!-- Inside Add Product Modal -->
 <div class="col-md-12">
   <label>Specifications</label>
-  <textarea name="specifications" id="edit-specifications" class="form-control" rows="3">{{ $product->specifications ?? '' }}</textarea>
+  <textarea name="specifications" id="add-specifications" class="form-control" rows="3">{{ old('specifications') }}</textarea>
 </div>
+
 
 <div class="col-md-6">
   <label>Warranty</label>
@@ -139,6 +141,70 @@ function createEditCategoryEditor(element) {
         });
 }
 </script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+let addSpecificationsEditor = null;
+let editSpecificationsEditor = null;
+
+// For Add Modal
+document.addEventListener('DOMContentLoaded', function () {
+    const addModal = document.getElementById('createProductModal');
+    if (addModal) {
+        addModal.addEventListener('shown.bs.modal', function () {
+            const editorElement = document.querySelector('#add-specifications');
+            if (!editorElement) return;
+
+            if (addSpecificationsEditor) {
+                addSpecificationsEditor.destroy()
+                    .then(() => createAddSpecificationsEditor(editorElement))
+                    .catch(error => console.error(error));
+            } else {
+                createAddSpecificationsEditor(editorElement);
+            }
+        });
+    }
+
+    // For Edit Modal
+    const editModal = document.getElementById('editProductModal');
+    if (editModal) {
+        editModal.addEventListener('shown.bs.modal', function () {
+            const editorElement = document.querySelector('#edit-specifications');
+            if (!editorElement) return;
+
+            if (editSpecificationsEditor) {
+                editSpecificationsEditor.destroy()
+                    .then(() => createEditSpecificationsEditor(editorElement))
+                    .catch(error => console.error(error));
+            } else {
+                createEditSpecificationsEditor(editorElement);
+            }
+        });
+    }
+});
+
+function createAddSpecificationsEditor(element) {
+    ClassicEditor
+        .create(element)
+        .then(editor => {
+            addSpecificationsEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+function createEditSpecificationsEditor(element) {
+    ClassicEditor
+        .create(element)
+        .then(editor => {
+            editSpecificationsEditor = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+</script>
+
 <script>
 $(document).ready(function () {
   // Initialize global flag if not exists

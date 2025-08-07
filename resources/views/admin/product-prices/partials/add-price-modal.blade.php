@@ -1,7 +1,7 @@
 <div class="mb-3">
-  <label for="product_id" class="form-label">Select Product</label>
+  {{-- <label for="product_id" class="form-label">Select Product</label> --}}
   <select name="product_id" id="product_id" class="form-control" required>
-    <option value="">-- Select Product --</option>
+    {{-- <option value="">-- Select Product --</option> --}}
     @foreach($products as $product)
       <option value="{{ $product->id }}">{{ $product->name }}</option>
     @endforeach
@@ -30,5 +30,18 @@
 
 <div class="mb-3">
     <label>Currency</label>
-    <input type="text,number" name="currency" class="form-control" required>
+    <select name="currency" class="form-control" required>
+        <option value="">Select Currency</option>
+        <option value="USD">USD</option> <!-- United States Dollar -->
+        <option value="EUR">EUR</option> <!-- Euro -->
+        <option value="GBP">GBP</option> <!-- British Pound -->
+        <option value="JPY">JPY</option> <!-- Japanese Yen -->
+        <option value="CNY">CNY</option> <!-- Chinese Yuan -->
+        <option value="INR">INR</option> <!-- Indian Rupee -->
+        <option value="PKR">PKR</option> <!-- Pakistani Rupee -->
+        <option value="AUD">AUD</option> <!-- Australian Dollar -->
+        <option value="CAD">CAD</option> <!-- Canadian Dollar -->
+        <option value="AED">AED</option> <!-- UAE Dirham -->
+    </select>
 </div>
+

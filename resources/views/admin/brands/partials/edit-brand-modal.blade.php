@@ -5,15 +5,20 @@
 </style>
 
 <input type="hidden" name="id" id="edit-brand-id" value="{{ $brand->id ?? '' }}">
+
 <div class="col-md-6">
     <label for="category_id">Category</label>
     <select name="category_id" class="form-control" required>
         <option value="">Select Category</option>
         @foreach($categories as $category)
-            <option value="{{ $category->id }}">{{ $category->name }}</option>
+            <option value="{{ $category->id }}"
+                {{ (isset($brand) && $brand->category_id == $category->id) ? 'selected' : '' }}>
+                {{ $category->name }}
+            </option>
         @endforeach
     </select>
 </div>
+
 <div class="col-md-6">
     <label>Name</label>
     <input type="text" name="name" id="edit-brand-name" class="form-control" value="{{ $brand->name ?? '' }}" required>

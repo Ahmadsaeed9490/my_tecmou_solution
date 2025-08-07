@@ -10,8 +10,6 @@
         /* Adjust as needed */
     }
 </style>
-
-
   <div class="col-md-6">
             <label for="category_id">Category</label>
             <select name="category_id" class="form-control" required>
@@ -39,7 +37,7 @@
         class="form-control">{{ old('description', $brand->description) }}</textarea>
 </div>
 
-<div class="mb-3">
+<div class="col-md-6">
     <label class="form-label">Status</label>
     <select name="status" class="form-control @error('status') is-invalid @enderror">
         <option value="1" {{ old('status', $brand->status ?? 1) == 1 ? 'selected' : '' }}>Active</option>
@@ -77,30 +75,19 @@
         }
     }
 </script>
-
 <script>
-    function previewLogo(input) {
-        const preview = document.getElementById('logoPreview');
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.classList.remove('d-none');
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
     // Auto-generate slug from name
-    document.querySelector('input[name="name"]').addEventListener('input', function () {
-        const nameValue = this.value;
-        const slug = nameValue
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9\s-]/g, '')  // Remove special chars
-            .replace(/\s+/g, '-')          // Replace spaces with hyphens
-            .replace(/-+/g, '-');          // Remove multiple hyphens
+   $(document).ready(function () {
+    $('input[name="name"]').on('input', function () {
+      let name = $(this).val();
+      let slug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // remove non-alphanumeric chars
+        .replace(/\s+/g, '-')         // replace spaces with -
+        .replace(/-+/g, '-')          // remove multiple -
+        .trim();
 
-        document.querySelector('input[name="slug"]').value = slug;
+      $('input[name="slug"]').val(slug);
     });
+  });
 </script>
