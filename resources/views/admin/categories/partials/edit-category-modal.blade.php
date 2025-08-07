@@ -1,24 +1,20 @@
 <style>
     .ck-editor__editable_inline {
-        min-height: 300px;
+        min-height: 150px;
     }
 </style>
-
 <div class="mb-3">
   <label for="name" class="form-label">Name</label>
   <input type="text" name="name" class="form-control" value="{{ $category->name ?? '' }}" required>
 </div>
-
 <div class="mb-3">
   <label for="slug" class="form-label">Slug</label>
   <input type="text" name="slug" class="form-control" value="{{ $category->slug ?? '' }}">
 </div>
-
 <div class="col-12">
     <label>Description</label>
-    <textarea name="description" id="edit-brand-description" class="form-control">{{ $brand->description ?? '' }}</textarea>
+    <textarea name="description" id="edit-brand-description" class="form-control">{{ $category->description ?? '' }}</textarea>
 </div>
-
 <div class="mb-3">
   <label for="image" class="form-label">Image</label>
   <input type="file" name="image" class="form-control">
@@ -26,7 +22,6 @@
     <small>Current Image: {{ $category->image }}</small>
   @endif
 </div>
-
 <div class="mb-3">
   <label for="status" class="form-label">Status</label>
   <select name="status" class="form-control">
@@ -35,6 +30,11 @@
   </select>
 </div>
 
+
+<<<<<<<<< Temporary merge branch 1
+
+=========
+>>>>>>>>> Temporary merge branch 2
 <div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>
   <select name="parent_id" class="form-control">
@@ -48,21 +48,20 @@
 </div>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-    let editBrandEditor;
+    let editCategoryEditor;
 
-    function initEditBrandEditor() {
+    function initEditCategoryEditor() {
         const el = document.querySelector('#edit-brand-description');
-
         if (el) {
-            if (editBrandEditor) {
-                editBrandEditor.destroy().then(() => {
+            if (editCategoryEditor) {
+                editCategoryEditor.destroy().then(() => {
                     ClassicEditor.create(el).then(editor => {
-                        editBrandEditor = editor;
+                        editCategoryEditor = editor;
                     });
                 });
             } else {
                 ClassicEditor.create(el).then(editor => {
-                    editBrandEditor = editor;
+                    editCategoryEditor = editor;
                 }).catch(error => {
                     console.error('CKEditor error:', error);
                 });
@@ -70,10 +69,9 @@
         }
     }
 
-    // When edit modal opens
     document.addEventListener('DOMContentLoaded', function () {
-        $('#editBrandModal').on('shown.bs.modal', function () {
-            initEditBrandEditor();
+        $('#edit_category_Modal').on('shown.bs.modal', function () {
+            initEditCategoryEditor(); // ✅ Corrected function name
         });
     });
 </script>
@@ -91,4 +89,4 @@
       $('input[name="slug"]').val(slug);
     });
   });
-</script> 
+</script>

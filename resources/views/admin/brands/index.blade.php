@@ -19,6 +19,7 @@
                         <th>Category_Name</th>
                         <th>Brand_Name</th>
                         <th>Slug</th>
+                        <th>Description</th>
                         <th>Website</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -38,6 +39,7 @@
                             <td>{{ $brand->category->name ?? 'N/A' }}</td>
                             <td>{{ $brand->name }}</td>
                             <td>{{ $brand->slug }}</td>
+                            <td>{{ \Illuminate\Support\Str::limit(strip_tags($brand->description), 50) }}</td>
                             <td><a href="{{ $brand->website }}" target="_blank">{{ $brand->website }}</a></td>
                             <td>
                                 @if ($brand->deleted_at)
@@ -56,16 +58,15 @@
                             </td>
                             <td>
                                 @if (!$brand->deleted_at)
-                                    <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}">Edit</button>
+    <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}" >Edit</button>
 
-                                    <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Are you sure?')">Delete</button>
-                                    </form>
-                                @else
-                                    <span class="text-muted">No Actions</span>
-                                @endif
+    <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
+        @csrf @method('DELETE')
+        <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+    </form>
+@else
+    <span class="text-muted">No Actions</span>
+@endif
 
                             </td>
                         </tr>

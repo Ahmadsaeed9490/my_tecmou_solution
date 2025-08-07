@@ -17,6 +17,12 @@ class ProductPrice extends Model
         'currency',
     ];
 
+    // Add scope to get latest price
+    public function scopeLatest($query)
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
