@@ -1,11 +1,19 @@
 <style>
     .ck-editor__editable_inline {
-        min-height: 300px;
+        min-height:150px;
     }
 </style>
 
 <input type="hidden" name="id" id="edit-brand-id" value="{{ $brand->id ?? '' }}">
-
+<div class="col-md-6">
+    <label for="category_id">Category</label>
+    <select name="category_id" class="form-control" required>
+        <option value="">Select Category</option>
+        @foreach($categories as $category)
+            <option value="{{ $category->id }}">{{ $category->name }}</option>
+        @endforeach
+    </select>
+</div>
 <div class="col-md-6">
     <label>Name</label>
     <input type="text" name="name" id="edit-brand-name" class="form-control" value="{{ $brand->name ?? '' }}" required>
@@ -19,20 +27,12 @@
     <label>Website</label>
     <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
 </div>
-<!-- Edit Modal -->
 <div class="col-12">
     <label>Description</label>
-    <textarea name="description" id="editDescriptionEditor" class="form-control">{{ old('description', $category->description ?? '') }}</textarea>
+    <textarea name="description" id="edit-brand-description" class="form-control">
+        {{ $brand->description ?? '' }}
+    </textarea>
 </div>
-
-
-
-
-<div class="col-md-6">
-    <label>Website</label>
-    <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
-</div>
-
 
 <div class="mb-3">
     <label for="status" class="form-label">Status</label>
@@ -45,31 +45,48 @@
 <div class="col-md-6">
     <label>Logo</label>
     <input type="file" name="logo" id="edit-brand-logo" class="form-control" accept="image/*">
-    <img id="editBrandLogoPreview"
-         src="{{ isset($brand) && $brand->logo ? asset('storage/' . $brand->logo) : '#' }}"
-         class="mt-2 {{ isset($brand) && $brand->logo ? '' : 'd-none' }} border rounded"
-         width="60" height="60">
+    <img id="editBrandLogoPreview" src="{{ isset($brand) && $brand->logo ? asset('storage/' . $brand->logo) : '#' }}"
+        class="mt-2 {{ isset($brand) && $brand->logo ? '' : 'd-none' }} border rounded" width="60" height="60">
 </div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-    let createEditorInstance;
-    let editEditorInstance;
+    let editBrandEditor;
 
-    // Create CKEditor for "Create Modal"
-    function initCreateEditor() {
-        const el = document.querySelector('#createDescriptionEditor');
-        if (el && !createEditorInstance) {
-            ClassicEditor
-                .create(el)
-                .then(editor => {
-                    createEditorInstance = editor;
-                })
-                .catch(error => {
-                    console.error('Create CKEditor error:', error);
-                });
+    function initEditBrandEditor() {
+        const el = document.querySelector('#edit-brand-description');
+        if (el) {
+            // If already initialized, destroy and recreate
+            if (editBrandEditor) {
+                editBrandEditor.destroy()
+                    .then(() => {
+                        ClassicEditor.create(el)
+                            .then(editor => {
+                                editBrandEditor = editor;
+                            });
+                    });
+            } else {
+                ClassicEditor.create(el)
+                    .then(editor => {
+                        editBrandEditor = editor;
+                    })
+                    .catch(error => {
+                        console.error('CKEditor error:', error);
+                    });
+            }
         }
     }
 
+    // Trigger CKEditor initialization every time the edit modal is shown
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#editBrandModal').on('shown.bs.modal', function () {
+            initEditBrandEditor();
+        });
+    });
+</script>
+
+<script>
     // Create or Refresh CKEditor for "Edit Modal"
     function initEditEditor() {
         const el = document.querySelector('#editDescriptionEditor');
@@ -95,7 +112,6 @@
             }
         }
     }
-
     // Run on page ready
     document.addEventListener("DOMContentLoaded", function () {
         // Init Create CKEditor immediately
@@ -107,10 +123,6 @@
         });
     });
 </script>
-
-
-
-
 <script>
     // Auto-generate slug from name
     $(document).on('input', '#edit-brand-name', function () {

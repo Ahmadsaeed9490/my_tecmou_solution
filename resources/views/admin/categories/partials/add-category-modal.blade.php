@@ -6,7 +6,7 @@
     
 }
 .ck-editor__editable_inline {
-        min-height: 300px;
+        min-height: 150px;
 }
 </style>
 
@@ -40,7 +40,6 @@
     @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
 
   </div>
-</div>
 <div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>
   <select name="parent_id" class="form-control">

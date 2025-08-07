@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('product_prices', function (Blueprint $table) {
             $table->id(); // <== yeh default primary key hai
-            $table->unsignedBigInteger('product_id')->unique();
+$table->unsignedBigInteger('product_id')->index(); // allow duplicates
 
             $table->decimal('min_price', 10, 2);
             $table->decimal('max_price', 10, 2);
@@ -23,14 +23,19 @@ return new class extends Migration {
             $table->softDeletes();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            Schema::table('product_prices', function (Blueprint $table) {
+            $table->dropUnique('product_prices_product_id_unique');
+        });
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+     public function down(): void
     {
-        Schema::dropIfExists('product_prices');
+        Schema::table('product_prices', function (Blueprint $table) {
+            $table->unique('product_id');
+        });
     }
 };

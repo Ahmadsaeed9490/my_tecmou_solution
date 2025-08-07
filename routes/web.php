@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
 
         // Category Routes
+        Route::get('admin/categories/{id}/subcategories', [CategoryController::class, 'getSubcategories']);
         Route::post('/categories/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggleStatus');
         Route::prefix('categories')->name('categories.')->group(function () {
             Route::get('{id}/subcategories', [CategoryController::class, 'getSubcategories']);

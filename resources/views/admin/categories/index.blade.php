@@ -1,12 +1,10 @@
 @extends('layout.master')
 @section('content')
-
 <div class="container-fluid pt-4 px-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>All Category</h4>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCategoryModal">Add Category</button>
     </div>
-
    @if ($errors->any())
   <div class="alert alert-danger">
     <ul class="mb-0">
@@ -31,49 +29,47 @@
             </thead>
             <tbody>
             @foreach ($categories as $category)
-              <tr class="category-row">
-                <td>{{ $category->id }}</td>
-                <td>{{ $category->name }}</td>
-                <td>{{ $category->slug }}</td>
-                <td>{{ \Illuminate\Support\Str::limit($category->description, 50) }}</td>
-                <td>
-                    @if ($category->deleted_at)
-                        <span class="badge bg-secondary">Deleted</span>
-                    @else
-                        <div class="form-check form-switch">
-                            <input type="checkbox"
-                                class="form-check-input toggle-category-status"
-                                data-id="{{ $category->id }}"
-                                {{ $category->status ? 'checked' : '' }}>
-                            <label class="form-check-label ms-2">
-                                <span class="badge status-badge bg-{{ $category->status ? 'success' : 'danger' }}">
-                                    {{ $category->status ? 'Active' : 'Inactive' }}
-                                </span>
-                            </label>
-                        </div>
-                    @endif
-                </td>
-                      <td>
-                        @if($category->image)
-                          <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="40">
+                  <tr class="category-row">
+                    <td>{{ $category->id }}</td>
+                    <td>{{ $category->name }}</td>
+                    <td>{{ $category->slug }}</td>
+                    <td>{{ \Illuminate\Support\Str::limit(strip_tags($category->description), 50) }}</td>
+                    <td>
+                        @if ($category->deleted_at)
+                            <span class="badge bg-secondary">Deleted</span>
+                        @else
+                            <div class="form-check form-switch">
+                                <input type="checkbox"
+                                    class="form-check-input toggle-category-status"
+                                    data-id="{{ $category->id }}"
+                                    {{ $category->status ? 'checked' : '' }}>
+                                <label class="form-check-label ms-2">
+                                    <span class="badge status-badge bg-{{ $category->status ? 'success' : 'danger' }}">
+                                        {{ $category->status ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </label>
+                            </div>
                         @endif
-                      </td>
-              <td>
-                  @if (!$category->deleted_at)
-                      <a href="javascript:void(0)" onclick="editCategory({{ $category->id }})" class="btn btn-sm btn-warning">Edit</a>
-                      <button onclick="setDeleteId({{ $category->id }})" class="btn btn-sm btn-danger">Delete</button>
-                  @else
-                      <span class="text-muted">No Actions</span>
-                  @endif
-              </td>
-
-              </tr>
+                    </td>
+                          <td>
+                            @if($category->image)
+                              <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="40">
+                            @endif
+                          </td>
+                  <td>
+                      @if (!$category->deleted_at)
+                          <a href="javascript:void(0)" onclick="editCategory({{ $category->id }})" class="btn btn-sm btn-warning">Edit</a>
+                          <button onclick="setDeleteId({{ $category->id }})" class="btn btn-sm btn-danger">Delete</button>
+                      @else
+                          <span class="text-muted">No Actions</span>
+                      @endif
+                  </td>
+                  </tr>
             @endforeach
           </tbody>
         </table>
     </div>
 </div>
-
 <!-- Add Category Modal -->
 <div class="modal fade" id="createCategoryModal" tabindex="-1">
   <div class="modal-dialog">
@@ -94,7 +90,6 @@
     </form>
   </div>
 </div>
-
 <!-- Edit Category Modal -->
 <div class="modal fade" id="edit_category_Modal" tabindex="-1">
   <div class="modal-dialog">
@@ -115,7 +110,6 @@
     </form>
   </div>
 </div>
-
 <!-- Delete Modal -->
 <div class="modal fade" id="delete_category_Modal" tabindex="-1">
   <div class="modal-dialog">
@@ -138,7 +132,6 @@
     </form>
   </div>
 </div>
-
 <!-- JavaScript -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -202,7 +195,6 @@
         const categoryId = checkbox.data('id');
         const newStatus = checkbox.is(':checked') ? 1 : 0;
         const badge = checkbox.closest('div').find('.status-badge');
-
         // Confirm alert
         const confirmMsg = newStatus
             ? "Are you sure you want to activate this category?"
