@@ -9,10 +9,15 @@ use Illuminate\Http\Request;
 
 class ProductPriceController extends Controller
 {
-   public function index()
+public function index()
 {
     $productPrices = ProductPrice::withTrashed()->with('product')->get();
-    $products = Product::all();
+
+    // ✅ Get products that are active, not deleted, and not already used in product_prices
+    $products = Product::where('status', 1)
+        ->whereNull('deleted_at')
+        ->whereNotIn('id', ProductPrice::pluck('product_id')->toArray())
+        ->get();
 
     return view('admin.product-prices.index', compact('productPrices', 'products'));
 }

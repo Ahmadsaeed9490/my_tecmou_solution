@@ -6,12 +6,10 @@
     }
 
     .ck-editor__editable_inline {
-        min-height: 300px;
+        min-height: 150px;
         /* Adjust as needed */
     }
 </style>
-
-
   <div class="col-md-6">
             <label for="category_id">Category</label>
             <select name="category_id" class="form-control" required>
@@ -77,7 +75,6 @@
         }
     }
 </script>
-
 <script>
     function previewLogo(input) {
         const preview = document.getElementById('logoPreview');

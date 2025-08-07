@@ -4,8 +4,18 @@
     }
 </style>
 
+
 <input type="hidden" name="id" id="edit-brand-id" value="{{ $brand->id ?? '' }}">
 
+  <div class="col-md-6">
+            <label for="category_id">Category</label>
+            <select name="category_id" class="form-control" required>
+                <option value="">Select Category</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
 <div class="col-md-6">
     <label>Name</label>
     <input type="text" name="name" id="edit-brand-name" class="form-control" value="{{ $brand->name ?? '' }}" required>
@@ -19,7 +29,7 @@
     <label>Website</label>
     <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">
 </div>
-<!-- Edit Modal -->
+
 <div class="col-12">
     <label>Description</label>
     <textarea name="description" id="editDescriptionEditor" class="form-control">{{ old('description', $category->description ?? '') }}</textarea>
@@ -104,10 +114,6 @@
         });
     });
 </script>
-
-
-
-
 <script>
     // Auto-generate slug from name
     $(document).on('input', '#edit-brand-name', function () {

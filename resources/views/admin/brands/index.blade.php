@@ -56,15 +56,16 @@
                             </td>
                             <td>
                                 @if (!$brand->deleted_at)
-    <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}" >Edit</button>
+                                    <button class="btn btn-sm btn-info editBrandBtn" data-id="{{ $brand->id }}">Edit</button>
 
-    <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
-        @csrf @method('DELETE')
-        <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-    </form>
-@else
-    <span class="text-muted">No Actions</span>
-@endif
+                                    <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure?')">Delete</button>
+                                    </form>
+                                @else
+                                    <span class="text-muted">No Actions</span>
+                                @endif
 
                             </td>
                         </tr>
@@ -74,8 +75,9 @@
         </div>
     </div>
 
-     <!-- Edit Modal -->
-    <div class="modal fade" id="editBrandModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editBrandModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="editBrandModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form method="POST" id="editBrandForm" enctype="multipart/form-data">
@@ -116,123 +118,115 @@
         </div>
     </div>
 
-   
 
-    
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-$(document).ready(function () {
-    // Prevent modal from closing on outside click
-    $('#editBrandModal').modal({
-        backdrop: 'static',
-        keyboard: false
-    });
-    
-    // Edit button click
-    $('.editBrandBtn').on('click', function (e) {
-        e.preventDefault();
-        const brandId = $(this).data('id');
-        
-        $.ajax({
-            url: '/admin/brands/' + brandId + '/edit',
-            type: 'GET',
-            success: function (brand) {
-                if (!brand.id) {
-                    console.error("No ID returned in response.", brand);
+    <script>
+        $(document).ready(function () {
+            // Prevent modal from closing on outside click
+            $('#editBrandModal').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+
+            // Edit button click
+            $('.editBrandBtn').on('click', function (e) {
+                e.preventDefault();
+                const brandId = $(this).data('id');
+
+                $.ajax({
+                    url: '/admin/brands/' + brandId + '/edit',
+                    type: 'GET',
+                    success: function (brand) {
+                        if (!brand.id) {
+                            console.error("No ID returned in response.", brand);
+                            return;
+                        }
+
+                        // Set form action using Laravel route
+                        const actionUrl = `/admin/brands/${brand.id}`;
+                        $('#editBrandForm').attr('action', actionUrl);
+
+                        // Populate form fields
+                        $('#editBrandForm input[name="name"]').val(brand.name);
+                        $('#editBrandForm input[name="slug"]').val(brand.slug);
+                        $('#editBrandForm textarea[name="description"]').val(brand.description);
+                        $('#editBrandForm input[name="website"]').val(brand.website);
+                        $('#editBrandForm select[name="status"]').val(brand.status);
+                        $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
+
+                        // Preview logo
+                        if (brand.logo) {
+                            $('#editBrandLogoPreview')
+                                .attr('src', '/storage/' + brand.logo)
+                                .removeClass('d-none')
+                                .show();
+                        } else {
+                            $('#editBrandLogoPreview').addClass('d-none').hide();
+                        }
+
+                        // Show modal
+                        $('#editBrandModal').modal('show');
+                    },
+                    error: function (xhr) {
+                        console.error("Error fetching brand:", xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', '.toggle-brand-status', function (e) {
+                e.preventDefault();
+
+                const checkbox = $(this);
+                const isChecked = checkbox.is(':checked');
+                const status = isChecked ? 1 : 0;
+                const brandId = checkbox.data('id');
+                const $badge = checkbox.closest('td').find('.status-badge');
+
+                // Confirmation Alert
+                const confirmChange = confirm("Are you sure you want to change the brand status?");
+
+                if (!confirmChange) {
+                    checkbox.prop('checked', !isChecked); // revert back
                     return;
                 }
 
-                // Set form action using Laravel route
-                const actionUrl = `/admin/brands/${brand.id}`;
-                $('#editBrandForm').attr('action', actionUrl);
+                // Proceed with AJAX
+                checkbox.prop('disabled', true);
 
-                            // Populate form fields
-                            $('#editBrandForm input[name="name"]').val(brand.name);
-                            $('#editBrandForm input[name="slug"]').val(brand.slug);
-                            $('#editBrandForm textarea[name="description"]').val(brand.description);
-                            $('#editBrandForm input[name="website"]').val(brand.website);
-                            $('#editBrandForm select[name="status"]').val(brand.status);
-                            $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
+                $.ajax({
+                    url: "{{ route('admin.brands.toggleStatus') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: brandId,
+                        status: status
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $badge
+                                .removeClass('bg-success bg-danger')
+                                .addClass(status ? 'bg-success' : 'bg-danger')
+                                .text(status ? 'Active' : 'Inactive');
+                        } else {
+                            checkbox.prop('checked', !isChecked); // revert toggle
+                            alert("Failed to update status.");
+                        }
+                    },
+                    error: function () {
+                        checkbox.prop('checked', !isChecked); // revert toggle
+                        alert("Error occurred while updating status.");
+                    },
+                    complete: function () {
+                        checkbox.prop('disabled', false);
+                    }
 
-                // Preview logo
-                if (brand.logo) {
-                    $('#editBrandLogoPreview')
-                        .attr('src', '/storage/' + brand.logo)
-                        .removeClass('d-none')
-                        .show();
-                } else {
-                    $('#editBrandLogoPreview').addClass('d-none').hide();
-                }
-
-                // Show modal
-                $('#editBrandModal').modal('show');
-            },
-            error: function (xhr) {
-                console.error("Error fetching brand:", xhr.responseText);
-            }
+                });
+            });
         });
-    });
-});
-</script>
-<script>
-$(document).ready(function () {
-    $(document).on('change', '.toggle-brand-status', function (e) {
-        e.preventDefault();
-
-        const checkbox = $(this);
-        const isChecked = checkbox.is(':checked');
-        const status = isChecked ? 1 : 0;
-        const brandId = checkbox.data('id');
-        const $badge = checkbox.closest('td').find('.status-badge');
-
-        // Confirmation Alert
-        const confirmChange = confirm("Are you sure you want to change the brand status?");
-
-        if (!confirmChange) {
-            checkbox.prop('checked', !isChecked); // revert back
-            return;
-        }
-
-        // Proceed with AJAX
-        checkbox.prop('disabled', true);
-
-        $.ajax({
-            url: "{{ route('admin.brands.toggleStatus') }}",
-            method: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                id: brandId,
-                status: status
-            },
-            success: function (response) {
-                if (response.success) {
-                    $badge
-                        .removeClass('bg-success bg-danger')
-                        .addClass(status ? 'bg-success' : 'bg-danger')
-                        .text(status ? 'Active' : 'Inactive');
-                } else {
-                    checkbox.prop('checked', !isChecked); // revert toggle
-                    alert("Failed to update status.");
-                }
-            },
-            error: function () {
-                checkbox.prop('checked', !isChecked); // revert toggle
-                alert("Error occurred while updating status.");
-            },
-            complete: function () {
-                checkbox.prop('disabled', false);
-            }
-        });
-    });
-});
-</script>
-<script>
-    setTimeout(function () {
-        var alert = document.getElementById('success-alert');
-        if (alert) {
-            alert.classList.add('fade-out');
-            setTimeout(() => alert.style.display = 'none', 500); // wait for fade out
-        }
-    }, 2000);
-</script>
+    </script>
 @endsection
