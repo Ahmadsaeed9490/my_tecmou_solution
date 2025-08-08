@@ -26,10 +26,6 @@
     <textarea name="description" id="editDescriptionEditor" class="form-control">{{ old('description', $category->description ?? '') }}</textarea>
 </div>
 
-<<<<<<<<< Temporary merge branch 1
-=========
-
-
 <div class="col-md-6">
     <label>Website</label>
     <input type="url" name="website" id="edit-brand-website" class="form-control" value="{{ $brand->website ?? '' }}">

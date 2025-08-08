@@ -11,9 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('product_prices', function (Blueprint $table) {
-            $table->id(); // <== yeh default primary key hai
-$table->unsignedBigInteger('product_id')->index(); // allow duplicates
-
+            $table->id(); // Primary key
+            $table->unsignedBigInteger('product_id')->index(); // Foreign key (allowing duplicates)
             $table->decimal('min_price', 10, 2);
             $table->decimal('max_price', 10, 2);
             $table->decimal('discount_percent', 5, 2);
@@ -23,19 +22,14 @@ $table->unsignedBigInteger('product_id')->index(); // allow duplicates
             $table->softDeletes();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            Schema::table('product_prices', function (Blueprint $table) {
-            $table->dropUnique('product_prices_product_id_unique');
-        });
         });
     }
 
     /**
      * Reverse the migrations.
      */
-     public function down(): void
+    public function down(): void
     {
-        Schema::table('product_prices', function (Blueprint $table) {
-            $table->unique('product_id');
-        });
+        Schema::dropIfExists('product_prices');
     }
 };

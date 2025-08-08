@@ -38,11 +38,8 @@
         <option value="0" {{ old('status', $brand->status ?? 1) == 0 ? 'selected' : '' }}>Inactive</option>
     </select>
     @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
-<<<<<<<<< Temporary merge branch 1
+
 </div>
-=========
-  </div>
->>>>>>>>> Temporary merge branch 2
 <div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>
   <select name="parent_id" class="form-control">

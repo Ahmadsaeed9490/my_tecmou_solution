@@ -29,12 +29,6 @@
     <option value="0" {{ (isset($category) && $category->status == 0) ? 'selected' : '' }}>Inactive</option>
   </select>
 </div>
-
-
-<<<<<<<<< Temporary merge branch 1
-
-=========
->>>>>>>>> Temporary merge branch 2
 <div class="mb-3">
   <label for="parent_id" class="form-label">Parent Category</label>
   <select name="parent_id" class="form-control">
