@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductPriceController;
@@ -78,6 +79,19 @@ Route::middleware('auth')->group(function () {
             Route::put('/{id}', [ProductPriceController::class, 'update'])->name('update');
             Route::delete('/{id}', [ProductPriceController::class, 'destroy'])->name('destroy');
         });
+
+
+    });
+         Route::get('{id}/subcategories', [SubCategoryController::class, 'getSubcategories'])->name('subcategories');
+         Route::prefix('subcategories')->name('subcategories.')->group(function () {
+    Route::get('/', [SubCategoryController::class, 'index'])->name('index');
+    Route::get('/create', [SubCategoryController::class, 'create'])->name('create');
+    Route::post('/store', [SubCategoryController::class, 'store'])->name('store');
+    Route::get('/{id}/edit', [SubCategoryController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [SubCategoryController::class, 'update'])->name('update');
+    Route::delete('/{id}', [SubCategoryController::class, 'destroy'])->name('destroy');
+    
+
 
     });
 

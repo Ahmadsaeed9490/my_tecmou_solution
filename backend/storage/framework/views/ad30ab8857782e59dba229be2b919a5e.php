@@ -41,6 +41,9 @@
                     <p class="pt-1 mb-0">Product-Prices</p>
                 </p>
             </a>
+
+         
+
             <div id="navbar-toggler10" class="nav-item nav-link text-center">
                 <i class="bi bi-gear"></i>
                 <p class="pt-1 mb-0">Setting</p>

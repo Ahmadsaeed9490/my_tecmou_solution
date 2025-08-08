@@ -50,12 +50,22 @@ class ProductPriceController extends Controller
         return redirect()->route('admin.product-prices.index')->with('success', 'Price updated successfully.');
     }
 
-    public function edit($id)
-    {
-        $price = ProductPrice::findOrFail($id);
+public function edit($id)
+{
+    $price = ProductPrice::with('product')->findOrFail($id);
 
-        return response()->json($price);
-    }
+    return response()->json([
+        'id' => $price->id,
+        'product_id' => $price->product_id,
+        'min_price' => $price->min_price,
+        'max_price' => $price->max_price,
+        'discount_percent' => $price->discount_percent,
+        'final_price' => $price->final_price,
+        'currency' => $price->currency,
+        'product_name' => $price->product->name ?? '',
+    ]);
+}
+
 
     public function destroy($id)
     {

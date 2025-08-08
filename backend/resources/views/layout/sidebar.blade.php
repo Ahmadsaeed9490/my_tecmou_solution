@@ -41,6 +41,14 @@
                     <p class="pt-1 mb-0">Product-Prices</p>
                 </p>
             </a>
+
+         {{-- <a href="{{ route('admin.subcategories.index') }}" class="nav-item nav-link text-center border-top">
+                <i class="bi bi-bookmarks-fill"></i>
+                <p class="pt-1 mb-0">
+                    <p class="pt-1 mb-0">SubCategory</p>
+                </p>
+            </a> --}}
+
             <div id="navbar-toggler10" class="nav-item nav-link text-center">
                 <i class="bi bi-gear"></i>
                 <p class="pt-1 mb-0">Setting</p>

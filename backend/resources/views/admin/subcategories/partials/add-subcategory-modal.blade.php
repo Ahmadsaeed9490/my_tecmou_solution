@@ -1,0 +1,42 @@
+<div class="mb-3">
+  <label>Name</label>
+  <input type="text" name="name" class="form-control" required>
+</div>
+
+<div class="mb-3">
+  <label>Slug</label>
+  <input type="text" name="slug" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label>Main Category</label>
+  <select name="category_id" class="form-control" required>
+    <option value="">Select Main Category</option>
+    @foreach ($categories as $cat)
+      <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+    @endforeach
+  </select>
+</div>
+
+<div class="col-12">
+    <label>Description</label>
+    <textarea name="description" id="descriptionEditor" class="form-control"></textarea>
+</div>
+
+<div class="mb-3">
+  <label>Image</label>
+  <input type="file" name="image" class="form-control">
+</div>
+
+<div class="mb-3">
+  <label>Status</label>
+  <select name="status" class="form-control">
+    <option value="1">Active</option>
+    <option value="0">Inactive</option>
+  </select>
+</div>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+ClassicEditor.create(document.querySelector('#descriptionEditor')).catch(console.error);
+</script>

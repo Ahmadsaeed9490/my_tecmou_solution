@@ -18,10 +18,33 @@
 <div class="mb-3">
   <label for="image" class="form-label">Image</label>
   <input type="file" name="image" class="form-control">
+
   @if (!empty($category->image))
-    <small>Current Image: {{ $category->image }}</small>
+    <div class="mt-2">
+      <small>Current Image:</small><br>
+
+      {{-- If stored in storage/app/public --}}
+    @if (!empty($category->image))
+  <div class="mt-2">
+    <small>Current Image:</small><br>
+
+    @php
+      $imagePath = Str::startsWith($category->image, 'categories/') 
+                    ? asset('storage/' . $category->image) 
+                    : asset('uploads/categories/' . $category->image);
+    @endphp
+
+    <img src="{{ $imagePath }}" 
+         alt="Category Image" 
+         style="max-width: 150px; height: auto; border: 1px solid #ddd; padding: 3px;">
+  </div>
+@endif
+
+    </div>
   @endif
 </div>
+
+
 <div class="mb-3">
   <label for="status" class="form-label">Status</label>
   <select name="status" class="form-control">
