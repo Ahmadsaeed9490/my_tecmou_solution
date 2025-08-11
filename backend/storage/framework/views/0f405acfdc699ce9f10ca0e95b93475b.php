@@ -16,8 +16,11 @@
     <textarea name="description" id="edit-brand-description" class="form-control"><?php echo e($category->description ?? ''); ?></textarea>
 </div>
 <div class="mb-3">
-  <label for="image" class="form-label">Image</label>
-  <input type="file" name="image" class="form-control">
+ <div class="mb-3">
+            <label class="form-label">Image</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+            <small class="form-text text-muted">Max file size: 2MB. Supported formats: JPG, PNG, GIF</small>
+          </div>  <input type="file" name="image" class="form-control">
 
   <?php if(!empty($category->image)): ?>
     <div class="mt-2">

@@ -26,10 +26,11 @@
         {{ old('description', $category->description ?? '') }}
     </textarea>
 </div>
-<div class="mb-3">
-  <label for="image" class="form-label">Image</label>
-  <input type="file" name="image" class="form-control">
-</div>
+ <div class="mb-3">
+            <label class="form-label">Image</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+            <small class="form-text text-muted">Max file size: 2MB. Supported formats: JPG, PNG, GIF</small>
+          </div>
 
 <div class="mb-3">
     <label class="form-label">Status</label>

@@ -12,9 +12,9 @@
   <label>Main Category</label>
   <select name="category_id" class="form-control" required>
     <option value="">Select Main Category</option>
-    @foreach ($categories as $cat)
-      <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-    @endforeach
+    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+      <option value="<?php echo e($cat->id); ?>"><?php echo e($cat->name); ?></option>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
   </select>
 </div>
 
@@ -55,3 +55,4 @@ $('#edit_subcategory_Modal').on('shown.bs.modal', function () {
     initEditSubCategoryEditor();
 });
 </script>
+<?php /**PATH C:\xampp\htdocs\my_tecmou_solution\backend\resources\views/admin/subcategories/partials/edit-subcategory-modal.blade.php ENDPATH**/ ?>

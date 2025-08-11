@@ -51,8 +51,12 @@
 
 <div class="col-md-6">
     <label>Logo</label>
-    <input type="file" name="logo" id="edit-brand-logo" class="form-control" accept="image/*">
-    <img id="editBrandLogoPreview" src="<?php echo e(isset($brand) && $brand->logo ? asset('storage/' . $brand->logo) : '#'); ?>"
+ <div class="mb-3">
+            <label class="form-label">Image</label>
+            <input type="file" name="image" class="form-control" accept="image/*">
+            <small class="form-text text-muted">Max file size: 2MB. Supported formats: JPG, PNG, GIF</small>
+          </div>
+        <img id="editBrandLogoPreview" src="<?php echo e(isset($brand) && $brand->logo ? asset('storage/' . $brand->logo) : '#'); ?>"
         class="mt-2 <?php echo e(isset($brand) && $brand->logo ? '' : 'd-none'); ?> border rounded" width="60" height="60">
 </div>
 

@@ -16,6 +16,18 @@ class SubCategoryController extends Controller
         return view('admin.subcategories.index', compact('subcategories', 'categories'));
     }
 
+    public function create()
+    {
+        // Since we're using modals, redirect to the subcategories index page
+        return redirect()->route('admin.subcategories.index');
+    }
+
+    public function show($id)
+    {
+        $subcategory = SubCategory::with('category')->findOrFail($id);
+        return view('admin.subcategories.show', compact('subcategory'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

@@ -12,15 +12,15 @@
   <label>Main Category</label>
   <select name="category_id" class="form-control" required>
     <option value="">Select Main Category</option>
-    @foreach ($categories as $cat)
-      <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-    @endforeach
+    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+      <option value="<?php echo e($cat->id); ?>"><?php echo e($cat->name); ?></option>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
   </select>
 </div>
 
 <div class="col-12">
     <label>Description</label>
-    <textarea name="description" id="editDescriptionEditor" class="form-control"></textarea>
+    <textarea name="description" id="descriptionEditor" class="form-control"></textarea>
 </div>
 
  <div class="mb-3">
@@ -37,21 +37,8 @@
   </select>
 </div>
 
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-let editSubCategoryEditor;
-function initEditSubCategoryEditor() {
-    if (editSubCategoryEditor) {
-        editSubCategoryEditor.destroy().then(() => {
-            ClassicEditor.create(document.querySelector('#editDescriptionEditor'))
-                .then(editor => { editSubCategoryEditor = editor; });
-        });
-    } else {
-        ClassicEditor.create(document.querySelector('#editDescriptionEditor'))
-            .then(editor => { editSubCategoryEditor = editor; });
-    }
-}
-
-$('#edit_subcategory_Modal').on('shown.bs.modal', function () {
-    initEditSubCategoryEditor();
-});
+ClassicEditor.create(document.querySelector('#descriptionEditor')).catch(console.error);
 </script>
+<?php /**PATH C:\xampp\htdocs\my_tecmou_solution\backend\resources\views/admin/subcategories/partials/add-subcategory-modal.blade.php ENDPATH**/ ?>

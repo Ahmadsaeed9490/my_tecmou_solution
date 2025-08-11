@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\SubCategory;
+    use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 class CategoryController extends Controller
 {
@@ -89,20 +91,22 @@ class CategoryController extends Controller
         return response()->json(['success' => false]);
     }
     public function getSubcategories($id)
-{
-    $subcategories = Category::where('parent_id', $id)->get();
-    $html = view('admin.categories.partials.subcategories', compact('subcategories'))->render();
-    return response()->json(['html' => $html]);
-}
-  public function destroy($id)
-{
-    $category = Category::withTrashed()->findOrFail($id);
-    if ($category->deleted_at) {
-        return response()->json(['success' => false, 'message' => 'Already deleted']);
+    {
+        try {
+            $subcategories = SubCategory::where('category_id', $id)->get();
+            Log::info('Subcategories for category ' . $id . ': ' . $subcategories->count());
+            return response()->json($subcategories);
+        } catch (\Exception $e) {
+            Log::error('Error getting subcategories: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to fetch subcategories'], 500);
+        }
     }
-    $category->deleted_at = $category->created_at;
-    $category->save();
-    return response()->json(['success' => true]);
-}
+
+    public function destroy($id)
+    {
+        $category = Category::findOrFail($id);
+        $category->delete();
+        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+    }
 
 }

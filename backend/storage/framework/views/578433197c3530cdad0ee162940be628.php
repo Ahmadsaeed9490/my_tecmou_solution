@@ -1,6 +1,6 @@
-@extends('layout.master')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid pt-4 px-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4>All SubCategories</h4>
@@ -9,15 +9,15 @@
         </button>
     </div>
 
-    @if ($errors->any())
+    <?php if($errors->any()): ?>
         <div class="alert alert-danger">
             <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
+                <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><?php echo e($error); ?></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
         </div>
-    @endif
+    <?php endif; ?>
 
     <div class="table-responsive bg-white p-3 rounded shadow-sm">
         <table class="table table-bordered align-middle">
@@ -34,61 +34,62 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach ($subcategories as $subcategory)
+            <?php $__currentLoopData = $subcategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subcategory): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr class="subcategory-row">
-                    <td>{{ $subcategory->id }}</td>
-                    <td>{{ $subcategory->name }}</td>
-                    <td>{{ $subcategory->slug }}</td>
-                    <td>{{ $subcategory->category->name ?? 'N/A' }}</td>
-                    <td>{{ \Illuminate\Support\Str::limit(strip_tags($subcategory->description), 50) }}</td>
+                    <td><?php echo e($subcategory->id); ?></td>
+                    <td><?php echo e($subcategory->name); ?></td>
+                    <td><?php echo e($subcategory->slug); ?></td>
+                    <td><?php echo e($subcategory->category->name ?? 'N/A'); ?></td>
+                    <td><?php echo e(\Illuminate\Support\Str::limit(strip_tags($subcategory->description), 50)); ?></td>
                     <td>
-                        @if ($subcategory->deleted_at)
+                        <?php if($subcategory->deleted_at): ?>
                             <span class="badge bg-secondary">Deleted</span>
-                        @else
+                        <?php else: ?>
                             <div class="form-check form-switch">
                                 <input type="checkbox"
                                     class="form-check-input toggle-subcategory-status"
-                                    data-id="{{ $subcategory->id }}"
-                                    {{ $subcategory->status ? 'checked' : '' }}>
+                                    data-id="<?php echo e($subcategory->id); ?>"
+                                    <?php echo e($subcategory->status ? 'checked' : ''); ?>>
                                 <label class="form-check-label ms-2">
-                                    <span class="badge status-badge bg-{{ $subcategory->status ? 'success' : 'danger' }}">
-                                        {{ $subcategory->status ? 'Active' : 'Inactive' }}
+                                    <span class="badge status-badge bg-<?php echo e($subcategory->status ? 'success' : 'danger'); ?>">
+                                        <?php echo e($subcategory->status ? 'Active' : 'Inactive'); ?>
+
                                     </span>
                                 </label>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </td>
                     <td>
-                        @if($subcategory->image)
-                            <img src="{{ asset('storage/' . $subcategory->image) }}" alt="Image" width="40">
-                        @endif
+                        <?php if($subcategory->image): ?>
+                            <img src="<?php echo e(asset('storage/' . $subcategory->image)); ?>" alt="Image" width="40">
+                        <?php endif; ?>
                     </td>
                     <td>
-                        @if (!$subcategory->deleted_at)
-                            <a href="javascript:void(0)" onclick="editSubCategory({{ $subcategory->id }})" class="btn btn-sm btn-warning">Edit</a>
-                            <button onclick="setDeleteId({{ $subcategory->id }})" class="btn btn-sm btn-danger">Delete</button>
-                        @else
+                        <?php if(!$subcategory->deleted_at): ?>
+                            <a href="javascript:void(0)" onclick="editSubCategory(<?php echo e($subcategory->id); ?>)" class="btn btn-sm btn-warning">Edit</a>
+                            <button onclick="setDeleteId(<?php echo e($subcategory->id); ?>)" class="btn btn-sm btn-danger">Delete</button>
+                        <?php else: ?>
                             <span class="text-muted">No Actions</span>
-                        @endif
+                        <?php endif; ?>
                     </td>
                 </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
         </table>
     </div>
 </div>
 
-{{-- ✅ Add SubCategory Modal --}}
+
 <div class="modal fade" id="createSubCategoryModal" tabindex="-1">
   <div class="modal-dialog">
-    <form method="POST" action="{{ route('admin.subcategories.store') }}" enctype="multipart/form-data">
-      @csrf
+    <form method="POST" action="<?php echo e(route('admin.subcategories.store')); ?>" enctype="multipart/form-data">
+      <?php echo csrf_field(); ?>
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Add SubCategory</h5>
         </div>
         <div class="modal-body">
-            @include('admin.subcategories.partials.add-subcategory-modal', ['subcategory' => null])
+            <?php echo $__env->make('admin.subcategories.partials.add-subcategory-modal', ['subcategory' => null], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Save</button>
@@ -98,18 +99,18 @@
   </div>
 </div>
 
-{{-- ✅ Edit SubCategory Modal --}}
+
 <div class="modal fade" id="edit_subcategory_Modal" tabindex="-1">
   <div class="modal-dialog">
-    <form method="POST" id="edit-subcategory-form" enctype="multipart/form-data" action="{{ url('admin/subcategories/0') }}">
-      @csrf
-      @method('PUT')
+    <form method="POST" id="edit-subcategory-form" enctype="multipart/form-data" action="<?php echo e(url('admin/subcategories/0')); ?>">
+      <?php echo csrf_field(); ?>
+      <?php echo method_field('PUT'); ?>
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Edit SubCategory</h5>
         </div>
         <div class="modal-body">
-            @include('admin.subcategories.partials.edit-subcategory-modal', ['subcategory' => null])
+            <?php echo $__env->make('admin.subcategories.partials.edit-subcategory-modal', ['subcategory' => null], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Update</button>
@@ -119,12 +120,12 @@
   </div>
 </div>
 
-{{-- ✅ Delete Modal --}}
+
 <div class="modal fade" id="delete_subcategory_Modal" tabindex="-1">
   <div class="modal-dialog">
-    <form method="POST" id="deleteForm" action="{{ url('admin/subcategories/0') }}">
-      @csrf
-      @method('DELETE')
+    <form method="POST" id="deleteForm" action="<?php echo e(url('admin/subcategories/0')); ?>">
+      <?php echo csrf_field(); ?>
+      <?php echo method_field('DELETE'); ?>
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Delete SubCategory</h5>
@@ -142,15 +143,15 @@
   </div>
 </div>
 
-{{-- ✅ JavaScript --}}
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   function editSubCategory(id) {
     $.ajax({
-      url: "{{ url('admin/subcategories') }}/" + id + "/edit",
+      url: "<?php echo e(url('admin/subcategories')); ?>/" + id + "/edit",
       type: 'GET',
       success: function(data) {
-        $('#edit-subcategory-form').attr('action', "{{ url('admin/subcategories') }}/" + id);
+        $('#edit-subcategory-form').attr('action', "<?php echo e(url('admin/subcategories')); ?>/" + id);
         $('#edit-subcategory-form input[name="name"]').val(data.name);
         $('#edit-subcategory-form input[name="slug"]').val(data.slug);
         $('#edit-subcategory-form textarea[name="description"]').val(data.description);
@@ -165,7 +166,7 @@
   }
 
   function setDeleteId(id) {
-    $('#deleteForm').attr('action', "{{ url('admin/subcategories') }}/" + id);
+    $('#deleteForm').attr('action', "<?php echo e(url('admin/subcategories')); ?>/" + id);
     $('#delete-error').addClass('d-none').text('');
     $('#delete_subcategory_Modal').modal('show');
   }
@@ -198,10 +199,10 @@
         checkbox.prop('disabled', true);
 
         $.ajax({
-            url: "{{ route('admin.subcategories.toggleStatus') }}",
+            url: "<?php echo e(route('admin.subcategories.toggleStatus')); ?>",
             method: 'POST',
             data: {
-                _token: "{{ csrf_token() }}",
+                _token: "<?php echo e(csrf_token()); ?>",
                 id: subCategoryId,
                 status: newStatus
             },
@@ -221,4 +222,5 @@
     });
   });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layout.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\my_tecmou_solution\backend\resources\views/admin/subcategories/index.blade.php ENDPATH**/ ?>

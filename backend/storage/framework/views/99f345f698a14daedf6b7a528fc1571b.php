@@ -61,9 +61,14 @@
                                 <?php if($product->deleted_at): ?>
                                     <span class="text-muted">No Actions</span>
                                 <?php else: ?>
-                                    <button onclick="editProduct(<?php echo e($product->id); ?>)" class="btn btn-sm btn-info">Edit</button>
-                                    <button onclick="deleteProduct(<?php echo e($product->id); ?>)"
-                                        class="btn btn-sm btn-danger">Delete</button>
+                                    <div class="d-flex gap-2">
+                                        <button onclick="editProduct(<?php echo e($product->id); ?>)" class="btn btn-sm btn-info">
+                                            Edit
+                                        </button>
+                                        <button onclick="deleteProduct(<?php echo e($product->id); ?>)" class="btn btn-sm btn-danger">
+                                            Delete
+                                        </button>
+                                    </div>
                                 <?php endif; ?>
                             </td>
 

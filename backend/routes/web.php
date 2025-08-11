@@ -24,10 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
 
         // Category Routes
-        Route::get('admin/categories/{id}/subcategories', [CategoryController::class, 'getSubcategories']);
         Route::post('/categories/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggleStatus');
         Route::prefix('categories')->name('categories.')->group(function () {
-            Route::get('{id}/subcategories', [CategoryController::class, 'getSubcategories']);
             Route::get('/index', [CategoryController::class, 'index'])->name('index');
             Route::get('/create', [CategoryController::class, 'create'])->name('create');
             Route::post('/store', [CategoryController::class, 'store'])->name('store');
@@ -35,6 +33,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/edit', [CategoryController::class, 'edit'])->name('edit');
             Route::put('/{id}', [CategoryController::class, 'update'])->name('update');
             Route::delete('/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+            Route::get('/{id}/subcategories', [CategoryController::class, 'getSubcategories'])->name('subcategories');
         });
 
         // Brand Routes
@@ -44,7 +43,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/create', [BrandController::class, 'create'])->name('create');
             Route::post('/store', [BrandController::class, 'store'])->name('store');
             Route::get('/{id}/edit', [BrandController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [BrandController::class, 'update'])->name('update'); // Changed from /{id}/update
+            Route::put('/{id}', [BrandController::class, 'update'])->name('update');
             Route::delete('/{id}', [BrandController::class, 'destroy'])->name('destroy');
         });
 
@@ -60,8 +59,7 @@ Route::middleware('auth')->group(function () {
         });
 
         // User Routes
-                Route::post('/users/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
-
+        Route::post('/users/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
         Route::prefix('users')->name('users.')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('index');
             Route::post('/store', [UserController::class, 'store'])->name('store');
@@ -80,18 +78,16 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}', [ProductPriceController::class, 'destroy'])->name('destroy');
         });
 
-
-    });
-         Route::get('{id}/subcategories', [SubCategoryController::class, 'getSubcategories'])->name('subcategories');
-         Route::prefix('subcategories')->name('subcategories.')->group(function () {
-    Route::get('/', [SubCategoryController::class, 'index'])->name('index');
-    Route::get('/create', [SubCategoryController::class, 'create'])->name('create');
-    Route::post('/store', [SubCategoryController::class, 'store'])->name('store');
-    Route::get('/{id}/edit', [SubCategoryController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [SubCategoryController::class, 'update'])->name('update');
-    Route::delete('/{id}', [SubCategoryController::class, 'destroy'])->name('destroy');
-    
-
+        // Subcategory Routes
+        Route::post('/subcategories/toggle-status', [SubCategoryController::class, 'toggleStatus'])->name('subcategories.toggleStatus');
+        Route::prefix('subcategories')->name('subcategories.')->group(function () {
+            Route::get('/', [SubCategoryController::class, 'index'])->name('index');
+            Route::get('/create', [SubCategoryController::class, 'create'])->name('create');
+            Route::post('/store', [SubCategoryController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [SubCategoryController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [SubCategoryController::class, 'update'])->name('update');
+            Route::delete('/{id}', [SubCategoryController::class, 'destroy'])->name('destroy');
+        });
 
     });
 

@@ -37,9 +37,10 @@
         class="form-control"><?php echo e(old('description', $brand->description)); ?></textarea>
 </div>
 
-<div class="col-md-6">
-    <label class="form-label">Status</label>
-    <select name="status" class="form-control <?php $__errorArgs = ['status'];
+<div class="row">
+    <div class="col-md-6">
+        <label for="status" class="form-label">Status</label>
+        <select name="status" id="status" class="form-control <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -47,23 +48,47 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>">
-        <option value="1" <?php echo e(old('status', $brand->status ?? 1) == 1 ? 'selected' : ''); ?>>Active</option>
-        <option value="0" <?php echo e(old('status', $brand->status ?? 1) == 0 ? 'selected' : ''); ?>>Inactive</option>
-    </select>
-    <?php $__errorArgs = ['status'];
+            <option value="1" <?php echo e(old('status', $brand->status ?? 1) == 1 ? 'selected' : ''); ?>>Active</option>
+            <option value="0" <?php echo e(old('status', $brand->status ?? 1) == 0 ? 'selected' : ''); ?>>Inactive</option>
+        </select>
+        <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> <div class="invalid-feedback"><?php echo e($message); ?></div> <?php unset($message);
+$message = $__bag->first($__errorArgs[0]); ?>
+            <div class="invalid-feedback"><?php echo e($message); ?></div>
+        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-</div>
+    </div>
 
-<div class="col-md-6">
-    <label>Logo</label>
-    <input type="file" name="logo" class="form-control" accept="image/*" onchange="previewLogo(this)">
-    <img id="logoPreview" src="#" class="mt-2 d-none border rounded" width="60" height="60">
+    <div class="col-md-6">
+        <label for="logo" class="form-label">Logo</label>
+        <input type="file" name="logo" id="logo" class="form-control <?php $__errorArgs = ['logo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" accept="image/*" onchange="previewLogo(this)">
+        <?php $__errorArgs = ['logo'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+            <div class="invalid-feedback"><?php echo e($message); ?></div>
+        <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+        <?php if(isset($brand->logo)): ?>
+            <img src="<?php echo e(asset('storage/' . $brand->logo)); ?>" class="mt-2 border rounded" width="60" height="60">
+        <?php else: ?>
+            <img id="logoPreview" src="#" class="mt-2 d-none border rounded" width="60" height="60">
+        <?php endif; ?>
+    </div>
 </div>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
