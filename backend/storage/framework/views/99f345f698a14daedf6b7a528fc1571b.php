@@ -245,8 +245,6 @@
                 });
             }
         }
-
-
     </script>
 
 <?php $__env->stopSection(); ?>

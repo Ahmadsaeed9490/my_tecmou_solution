@@ -8,15 +8,16 @@
   <input type="text" name="slug" class="form-control">
 </div>
 
-<div class="mb-3">
-  <label>Main Category</label>
-  <select name="category_id" class="form-control" required>
-    <option value="">Select Main Category</option>
-    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-      <option value="<?php echo e($cat->id); ?>"><?php echo e($cat->name); ?></option>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-  </select>
-</div>
+ <div class="modal-body">
+          <div class="mb-3">
+            <label>Main Category</label>
+            <select name="category_id" id="edit-category-id" class="form-control" required>
+              <option value="">Select Main Category</option>
+              <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($cat->id); ?>"><?php echo e($cat->name); ?></option>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+          </div>
 
 <div class="col-12">
     <label>Description</label>

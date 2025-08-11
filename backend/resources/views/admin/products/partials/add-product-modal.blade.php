@@ -38,27 +38,25 @@
 
 <div class="mb-3">
     <label class="form-label">Category <span class="text-danger">*</span></label>
-    <select name="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
-        <option value="">-- Select Category --</option>
-        @foreach($categories as $cat)
-            <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
-                {{ $cat->name }}
-            </option>
-        @endforeach
-    </select>
+   <select name="category_id" id="edit-category" class="form-control">
+    <option value="">Select Category</option>
+    @foreach($categories as $category)
+        <option value="{{ $category->id }}">{{ $category->name }}</option>
+    @endforeach
+</select>
+
     @error('category_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 
 <div class="mb-3">
     <label class="form-label">Brand <span class="text-danger">*</span></label>
-    <select name="brand_id" class="form-control @error('brand_id') is-invalid @enderror" required>
-        <option value="">-- Select Brand --</option>
-        @foreach($brands as $brand)
-            <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
-                {{ $brand->name }}
-            </option>
-        @endforeach
-    </select>
+   <!-- Brand Dropdown -->
+<select name="brand_id" id="brand" class="form-control" required>
+    <option value="">Select Brand</option>
+    @foreach($brands as $brand)
+        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+    @endforeach
+</select>
     @error('brand_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
 </div>
 

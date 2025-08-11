@@ -30,20 +30,23 @@
 
 <div class="col-md-6">
   <label>Category</label>
-  <select name="category_id" id="edit-category" class="form-select">
-    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-      <option value="<?php echo e($cat->id); ?>"><?php echo e($cat->name); ?></option>
+  <select name="category_id" id="edit-category" class="form-control">
+    <option value="">Select Category</option>
+    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-  </select>
+</select>
+
 </div>
 
 <div class="col-md-6">
   <label>Brand</label>
-  <select name="brand_id" id="edit-brand" class="form-select">
+ <select name="brand_id" id="edit-brand" class="form-control" required>
+    <option value="">Select Brand</option>
     <?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-      <option value="<?php echo e($brand->id); ?>"><?php echo e($brand->name); ?></option>
+        <option value="<?php echo e($brand->id); ?>"><?php echo e($brand->name); ?></option>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-  </select>
+</select>
 </div>
 
 <div class="col-md-6">

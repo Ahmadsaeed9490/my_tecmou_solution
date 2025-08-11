@@ -12,18 +12,26 @@ use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
-    public function index()
-    {
-        $products = Product::with(['category', 'brand'])
-                    ->withTrashed() // this will include soft-deleted products
-                    ->orderBy('id', 'desc')
-                    ->get();
+  // ProductController.php (index method)
+// ProductController.php
+public function index()
+{
+    $products = Product::with(['category', 'brand'])->get();
 
-        $categories = Category::all();
-        $brands = Brand::all();
+    // Sirf active + non-deleted categories
+    $categories = Category::where('status', 1)
+                          ->whereNull('deleted_at')
+                          ->get();
 
-        return view('admin.products.index', compact('products', 'categories', 'brands'));
-    }
+    // Sirf active + non-deleted brands
+    $brands = Brand::where('status', 1)
+                   ->whereNull('deleted_at')
+                   ->get();
+
+    return view('admin.products.index', compact('products', 'categories', 'brands'));
+}
+
+
 
     public function store(Request $request)
     {
@@ -170,6 +178,9 @@ class ProductController extends Controller
     if ($product) {
         $product->status = $request->status;
         $product->save();
+
+        // Status synchronization is now handled automatically by the Product model observer
+        // No need for manual sync here
 
         return response()->json(['success' => true]);
     }

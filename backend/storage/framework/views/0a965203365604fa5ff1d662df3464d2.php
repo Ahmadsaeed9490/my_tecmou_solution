@@ -48,7 +48,6 @@
     padding: 0.25rem 0.5rem;
 }
 
-/* Form validation styles */
 .form-control.is-invalid {
     border-color: #dc3545;
     box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
@@ -185,8 +184,7 @@
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </tbody>
 </table>
-
-    </div>
+</div>
 </div>
 <!-- Add Category Modal -->
 <div class="modal fade" id="createCategoryModal" tabindex="-1">
@@ -289,13 +287,13 @@
               <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
           </div>
-<div class="col-12">
-    <label>Description</label>
-    <textarea name="description" id="edit-brand-description" class="form-control">
-        <?php echo e($brand->description ?? ''); ?>
+              <div class="col-12">
+                  <label>Description</label>
+                  <textarea name="description" id="edit-brand-description" class="form-control">
+                      <?php echo e($brand->description ?? ''); ?>
 
-    </textarea>
-</div>
+                  </textarea>
+              </div>
           <div class="mb-3">
             <label class="form-label">Image</label>
             <input type="file" name="image" class="form-control" accept="image/*">
@@ -337,11 +335,9 @@
       },
       error: function(xhr) {
         alert('Failed to fetch category data.');
-        // Optionally show error in modal
       }
     });
   }
-
   function setDeleteId(id) {
     $('#deleteForm').attr('action', "<?php echo e(url('admin/categories')); ?>/" + id);
     $('#delete-error').addClass('d-none').text('');
@@ -349,15 +345,11 @@
   }
 
       $(document).ready(function () {
-        // Add a small indicator that the system is ready
         console.log('Categories page loaded successfully. Click on any category name to view subcategories.');
-        
-        // Handle subcategory form submission
         $('#addSubcategoryModal form').on('submit', function(e) {
             e.preventDefault();
             var form = this;
             var formData = new FormData(form);
-            
             $.ajax({
                 url: $(form).attr('action'),
                 type: 'POST',
@@ -365,20 +357,15 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    // Close modal
                     $('#addSubcategoryModal').modal('hide');
-                    // Show success message
                     showToast('Subcategory created successfully!', 'success');
-                    // Reset form
                     form.reset();
-                    // Refresh the page to show new subcategory
                     setTimeout(function() {
                         location.reload();
                     }, 1000);
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
-                        // Validation errors
                         var errors = xhr.responseJSON.errors;
                         var errorMessage = 'Please fix the following errors:\n';
                         for (var field in errors) {
@@ -391,24 +378,18 @@
                 }
             });
         });
-        
-        // Handle modal close events
         $('#addSubcategoryModal').on('hidden.bs.modal', function() {
-            // Reset form and validation states when modal is closed
             var form = $(this).find('form')[0];
             form.reset();
             $(this).find('.form-control').removeClass('is-invalid is-valid');
             $(this).find('.invalid-feedback').remove();
         });
-        
-        // Handle slug toggle
         $('#customSlugToggle').on('change', function() {
             var slugField = $('#addSubcategoryModal input[name="slug"]');
             if ($(this).is(':checked')) {
                 slugField.prop('readonly', false).focus();
             } else {
                 slugField.prop('readonly', true);
-                // Re-generate slug from name
                 var name = $('#addSubcategoryModal input[name="name"]').val();
                 if (name) {
                     var slug = name.toLowerCase()
@@ -421,23 +402,18 @@
             }
         });
         
-        // Auto-generate slug from name
         $('#addSubcategoryModal input[name="name"]').on('input', function() {
             var name = $(this).val();
             var slugField = $('#addSubcategoryModal input[name="slug"]');
-            
-            // Only auto-generate if slug field is empty
             if (!slugField.val()) {
                 var slug = name.toLowerCase()
                     .replace(/[^a-z0-9 -]/g, '') // Remove special characters
                     .replace(/\s+/g, '-') // Replace spaces with hyphens
                     .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
-                    .trim('-'); // Remove leading/trailing hyphens
+                    .trim('-'); 
                 slugField.val(slug);
             }
         });
-        
-        // Real-time form validation
         $('#addSubcategoryModal input, #addSubcategoryModal select, #addSubcategoryModal textarea').on('blur', function() {
             var field = $(this);
             var value = field.val();
@@ -453,7 +429,6 @@
                 field.next('.invalid-feedback').remove();
             }
         });
-        
         $('#search-input').on('keyup', function () {
       let value = $(this).val().toLowerCase();
       $('.category-row').filter(function () {
@@ -487,22 +462,17 @@
         const categoryId = checkbox.data('id');
         const newStatus = checkbox.is(':checked') ? 1 : 0;
         const badge = checkbox.closest('div').find('.status-badge');
-        // Confirm alert
         const confirmMsg = newStatus
             ? "Are you sure you want to activate this category?"
             : "Are you sure you want to deactivate this category?";
 
         if (!confirm(confirmMsg)) {
-            // User cancelled, revert checkbox
             checkbox.prop('checked', !checkbox.is(':checked'));
             return;
         }
-
-        // Disable switch while processing
         checkbox.prop('disabled', true);
-
         $.ajax({
-            url: "<?php echo e(route('admin.categories.toggleStatus')); ?>", // ✅ Make sure this route exists
+            url: "<?php echo e(route('admin.categories.toggleStatus')); ?>", 
             method: 'POST',
             data: {
                 _token: "<?php echo e(csrf_token()); ?>",
@@ -511,13 +481,10 @@
             },
                     success: function (response) {
             if (response.success) {
-                // Update badge
                 badge
                     .removeClass('bg-success bg-danger')
                     .addClass(newStatus ? 'bg-success' : 'bg-danger')
                     .text(newStatus ? 'Active' : 'Inactive');
-
-                // Show success message
                 showToast('Status updated successfully!', 'success');
             } else {
                 showToast('Status update failed.', 'error');
@@ -541,13 +508,10 @@ $(document).on('click', '.category-name', function () {
     let categoryName = $(this).text();
 
     if (!subRow.hasClass('d-none')) {
-        // Already visible → hide
         subRow.addClass('d-none');
         $(this).removeClass('text-success').addClass('text-primary');
         return;
     }
-
-    // Show loading text with better styling
     subRow.removeClass('d-none').find('td').html(`
         <div class="p-3 text-center">
             <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
@@ -556,11 +520,7 @@ $(document).on('click', '.category-name', function () {
             <span class="text-muted">Loading subcategories for "${categoryName}"...</span>
         </div>
     `);
-
-    // Change category name color to indicate it's active
     $(this).removeClass('text-primary').addClass('text-success');
-
-    // AJAX call
     $.ajax({
         url: "<?php echo e(route('admin.categories.subcategories', ':id')); ?>".replace(':id', categoryId),
         type: 'GET',
@@ -578,12 +538,10 @@ $(document).on('click', '.category-name', function () {
                 html += '<thead class="table-light">';
                 html += '<tr><th>Name</th><th>Slug</th><th>Status</th><th>Created</th><th>Actions</th></tr>';
                 html += '</thead><tbody>';
-                
                 data.forEach(function (sub) {
                     const statusBadge = sub.status ? 
                         '<span class="badge bg-success">Active</span>' : 
                         '<span class="badge bg-danger">Inactive</span>';
-                    
                     const createdDate = sub.created_at ? new Date(sub.created_at).toLocaleDateString() : 'N/A';
                     html += `<tr>
                         <td>${sub.name}</td>
@@ -596,7 +554,6 @@ $(document).on('click', '.category-name', function () {
                         </td>
                     </tr>`;
                 });
-                
                 html += '</tbody></table></div></div>';
                 subRow.find('td').html(html);
             } else {
@@ -627,49 +584,31 @@ $(document).on('click', '.category-name', function () {
 </script>
 
 <script>
-// Helper functions for subcategory actions
 function editSubcategory(id) {
-    // Redirect to subcategory edit page
     window.location.href = "<?php echo e(route('admin.subcategories.edit', ':id')); ?>".replace(':id', id);
 }
-
 function setDeleteSubcategoryId(id) {
-    // You can implement a delete modal for subcategories here
     if (confirm('Are you sure you want to delete this subcategory?')) {
-        // Redirect to delete route or implement AJAX delete
         window.location.href = "<?php echo e(route('admin.subcategories.destroy', ':id')); ?>".replace(':id', id);
     }
 }
-
 function openAddSubcategoryModal(categoryId) {
-    // Set the category ID in the modal
     $('#subcategory_category_id').val(categoryId);
-    // Clear any previous validation states
     $('#addSubcategoryModal .form-control').removeClass('is-invalid is-valid');
     $('#addSubcategoryModal .invalid-feedback').remove();
-    // Reset form
     $('#addSubcategoryModal form')[0].reset();
-    // Reset slug toggle
     $('#customSlugToggle').prop('checked', false);
     $('#addSubcategoryModal input[name="slug"]').prop('readonly', true);
-    // Show the modal
     $('#addSubcategoryModal').modal('show');
 }
-
 function resetSubcategoryForm() {
-    // Reset form
     $('#addSubcategoryModal form')[0].reset();
-    // Clear validation states
     $('#addSubcategoryModal .form-control').removeClass('is-invalid is-valid');
     $('#addSubcategoryModal .invalid-feedback').remove();
-    // Reset slug toggle
     $('#customSlugToggle').prop('checked', false);
     $('#addSubcategoryModal input[name="slug"]').prop('readonly', true);
-    // Focus on first field
     $('#addSubcategoryModal input[name="name"]').focus();
 }
-
-// Toast notification function
 function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0 position-fixed`;
@@ -682,25 +621,24 @@ function showToast(message, type = 'info') {
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     `;
-    
     document.body.appendChild(toast);
-    
     const bsToast = new bootstrap.Toast(toast);
     bsToast.show();
-    
-    // Remove toast after it's hidden
     toast.addEventListener('hidden.bs.toast', () => {
         document.body.removeChild(toast);
     });
 }
 </script>
-
 <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
 <script>
     CKEDITOR.replace('edit-brand-description');
+    $(document).on('shown.bs.modal', '#editBrandModal', function () {
+        if (CKEDITOR.instances['edit-brand-description']) {
+            CKEDITOR.instances['edit-brand-description'].destroy(true);
+        }
+        CKEDITOR.replace('edit-brand-description');
+    });
 </script>
-
-
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layout.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\my_tecmou_solution\backend\resources\views/admin/categories/index.blade.php ENDPATH**/ ?>

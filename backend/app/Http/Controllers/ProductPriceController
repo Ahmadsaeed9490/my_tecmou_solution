@@ -6,7 +6,6 @@ use App\Models\ProductPrice;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
-
 class ProductPriceController extends Controller
 {
     public function index()
@@ -73,43 +72,68 @@ class ProductPriceController extends Controller
 
         return redirect()->back()->with('success', 'Product price soft deleted successfully.');
     }
-public function toggleStatus(Request $request)
-{
-    $price = ProductPrice::findOrFail($request->id);
 
-    // Prevent activation if product is inactive or deleted
-    if ($request->status && (!$price->product || !$price->product->status || $price->product->deleted_at)) {
+    public function toggleStatus(Request $request)
+    {
+        $price = ProductPrice::findOrFail($request->id);
+
+        // Prevent activation if product is inactive or deleted
+        if ($request->status && (!$price->product || !$price->product->status || $price->product->deleted_at)) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Cannot activate price of inactive/deleted product.'
+            ]);
+        }
+
+        // Update the price status
+        $price->status = $request->status;
+        $price->save();
+
         return response()->json([
-            'success' => false, 
-            'message' => 'Cannot activate price of inactive/deleted product.'
+            'success' => true,
+            'message' => 'Price status updated successfully'
         ]);
     }
 
-    // If activating, deactivate all other prices for the same product
-    if ($request->status == 1) {
-        $this->syncAllPricesStatus($price->product_id);
+    /**
+     * Sync all product prices status with their associated product status
+     * This method can be called manually or automatically when products are updated
+     */
+    public function syncAllPricesStatus()
+    {
+        try {
+            $updatedCount = 0;
+            $productPrices = ProductPrice::with('product')->get();
+
+            foreach ($productPrices as $price) {
+                if ($price->product) {
+                    $newStatus = $price->product->status && !$price->product->deleted_at ? 1 : 0;
+                    
+                    if ($price->status !== $newStatus) {
+                        $price->status = $newStatus;
+                        $price->save();
+                        $updatedCount++;
+                    }
+                } else {
+                    // If product doesn't exist, deactivate the price
+                    if ($price->status !== 0) {
+                        $price->status = 0;
+                        $price->save();
+                        $updatedCount++;
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => "Successfully synchronized {$updatedCount} product prices",
+                'updated_count' => $updatedCount
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to synchronize product prices: ' . $e->getMessage()
+            ], 500);
+        }
     }
-
-    // Update this price status
-    $price->status = $request->status;
-    $price->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Price status updated successfully'
-    ]);
-}
-
-// ✅ New helper method
-public function syncAllPricesStatus($productId): void
-
-{
-    \App\Models\ProductPrice::where('product_id', $productId)
-        ->update(['status' => 0]);
-}
-  
-}
-
-
-
-
+} 

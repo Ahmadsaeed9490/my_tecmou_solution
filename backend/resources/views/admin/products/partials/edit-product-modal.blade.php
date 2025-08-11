@@ -30,20 +30,23 @@
 
 <div class="col-md-6">
   <label>Category</label>
-  <select name="category_id" id="edit-category" class="form-select">
-    @foreach ($categories as $cat)
-      <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+  <select name="category_id" id="edit-category" class="form-control">
+    <option value="">Select Category</option>
+    @foreach($categories as $category)
+        <option value="{{ $category->id }}">{{ $category->name }}</option>
     @endforeach
-  </select>
+</select>
+
 </div>
 
 <div class="col-md-6">
   <label>Brand</label>
-  <select name="brand_id" id="edit-brand" class="form-select">
-    @foreach ($brands as $brand)
-      <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+ <select name="brand_id" id="edit-brand" class="form-control" required>
+    <option value="">Select Brand</option>
+    @foreach($brands as $brand)
+        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
     @endforeach
-  </select>
+</select>
 </div>
 
 <div class="col-md-6">

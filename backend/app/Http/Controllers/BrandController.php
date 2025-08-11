@@ -7,15 +7,40 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+
 class BrandController extends Controller
 {
-
     public function index()
     {
         $brands = Brand::with(['category'])->withTrashed()->get();
-        $brand = new Brand(); // Empty instance for the create modal
-        $categories = Category::all(); // ✅ Add this line
-        return view('admin.brands.index', compact('brands', 'brand', 'categories')); // ✅ Pass it to view
+        $brand = new Brand();
+
+        // ✅ Sirf active aur non-deleted categories
+        $categories = Category::where('status', 1)
+                              ->whereNull('deleted_at')
+                              ->get();
+
+        return view('admin.brands.index', compact('brands', 'brand', 'categories'));
+    }
+
+    public function create()
+    {
+        $categories = Category::where('status', 1)
+                              ->whereNull('deleted_at')
+                              ->get();
+
+        return view('admin.brands.create', compact('categories'));
+    }
+
+    public function edit($id)
+    {
+        $brand = Brand::findOrFail($id);
+
+        $categories = Category::where('status', 1)
+                              ->whereNull('deleted_at')
+                              ->get();
+
+        return view('admin.brands.edit', compact('brand', 'categories'));
     }
 
     public function store(Request $request)
@@ -23,7 +48,7 @@ class BrandController extends Controller
         $request->validate([
             'name' => 'required',
             'status' => 'required|boolean',
-                'category_id' => 'required|exists:categories,id', 
+            'category_id' => 'required|exists:categories,id',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -34,23 +59,17 @@ class BrandController extends Controller
         $brand->description = $request->input('description');
         $brand->website = $request->input('website');
         $brand->status = $request->input('status');
-        
 
         if ($request->hasFile('logo')) {
-            // Set destination to public/storage/brands
             $file = $request->file('logo');
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
             $destinationPath = public_path('storage/brands');
 
-            // Create the folder if it doesn't exist
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0755, true);
             }
 
-            // Move file to public/storage/brands
             $file->move($destinationPath, $filename);
-
-            // Save relative path to database
             $brand->logo = 'brands/' . $filename;
         }
 
@@ -59,15 +78,14 @@ class BrandController extends Controller
         return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully!');
     }
 
-
-    public function edit($id)
+    // ✅ JSON edit data (for Ajax modal)
+    public function editAjax($id)
     {
         $brand = Brand::findOrFail($id);
         $brand->logo_url = $brand->logo ? asset('storage/' . $brand->logo) : null;
 
         return response()->json($brand);
     }
-
 
     public function update(Request $request, $id)
     {
@@ -87,7 +105,6 @@ class BrandController extends Controller
         $brand->status = $request->input('status');
 
         if ($request->hasFile('logo')) {
-            // Delete old logo if exists
             if ($brand->logo && file_exists(public_path('storage/' . $brand->logo))) {
                 unlink(public_path('storage/' . $brand->logo));
             }
@@ -96,15 +113,11 @@ class BrandController extends Controller
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
             $destinationPath = public_path('storage/brands');
 
-            // Create folder if not exists
             if (!file_exists($destinationPath)) {
                 mkdir($destinationPath, 0755, true);
             }
 
-            // Move new logo
             $file->move($destinationPath, $filename);
-
-            // Save relative path
             $brand->logo = 'brands/' . $filename;
         }
 
@@ -125,7 +138,6 @@ class BrandController extends Controller
         }
         return response()->json(['success' => false]);
     }
-
 
     public function destroy($id)
     {

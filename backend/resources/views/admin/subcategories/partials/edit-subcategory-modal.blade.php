@@ -8,15 +8,16 @@
   <input type="text" name="slug" class="form-control">
 </div>
 
-<div class="mb-3">
-  <label>Main Category</label>
-  <select name="category_id" class="form-control" required>
-    <option value="">Select Main Category</option>
-    @foreach ($categories as $cat)
-      <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-    @endforeach
-  </select>
-</div>
+ <div class="modal-body">
+          <div class="mb-3">
+            <label>Main Category</label>
+            <select name="category_id" id="edit-category-id" class="form-control" required>
+              <option value="">Select Main Category</option>
+              @foreach ($categories as $cat)
+                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+              @endforeach
+            </select>
+          </div>
 
 <div class="col-12">
     <label>Description</label>

@@ -4,11 +4,9 @@
             <h4>All Brands</h4>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createBrandModal">Add Brand</button>
         </div>
-
         <?php if(session('success')): ?>
             <div class="alert alert-success"><?php echo e(session('success')); ?></div>
         <?php endif; ?>
-
         <div class="table-responsive bg-white p-3 rounded shadow-sm">
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
@@ -58,15 +56,14 @@
                             </td>
                             <td>
                                 <?php if(!$brand->deleted_at): ?>
-    <button class="btn btn-sm btn-info editBrandBtn" data-id="<?php echo e($brand->id); ?>" >Edit</button>
-    <form action="<?php echo e(route('admin.brands.destroy', $brand->id)); ?>" method="POST" class="d-inline">
-        <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
-        <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-    </form>
-<?php else: ?>
-    <span class="text-muted">No Actions</span>
-<?php endif; ?>
-
+                                <button class="btn btn-sm btn-info editBrandBtn" data-id="<?php echo e($brand->id); ?>" >Edit</button>
+                                <form action="<?php echo e(route('admin.brands.destroy', $brand->id)); ?>" method="POST" class="d-inline">
+                                    <?php echo csrf_field(); ?> <?php echo method_field('DELETE'); ?>
+                                    <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                </form>
+                                    <?php else: ?>
+                                        <span class="text-muted">No Actions</span>
+                                    <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -74,14 +71,12 @@
             </table>
         </div>
     </div>
-
-     <!-- Edit Modal -->
     <div class="modal fade" id="editBrandModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form method="POST" id="editBrandForm" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
-                    <?php echo method_field('PUT'); ?> <!-- Use PUT method directly -->
+                    <?php echo method_field('PUT'); ?> 
                     <div class="modal-header">
                         <h5 class="modal-title">Edit Brand</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -96,8 +91,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Create Modal -->
     <div class="modal fade" id="createBrandModal" tabindex="-1" aria-labelledby="createBrandModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <form action="<?php echo e(route('admin.brands.store')); ?>" method="POST" enctype="multipart/form-data"
@@ -116,24 +109,17 @@
             </form>
         </div>
     </div>
-
-   
-
-    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-$(document).ready(function () {
-    // Prevent modal from closing on outside click
+     $(document).ready(function () {
     $('#editBrandModal').modal({
         backdrop: 'static',
         keyboard: false
     });
     
-    // Edit button click
     $('.editBrandBtn').on('click', function (e) {
         e.preventDefault();
         const brandId = $(this).data('id');
-        
         $.ajax({
             url: '/admin/brands/' + brandId + '/edit',
             type: 'GET',
@@ -142,12 +128,9 @@ $(document).ready(function () {
                     console.error("No ID returned in response.", brand);
                     return;
                 }
-
-                // Set form action using Laravel route
                 const actionUrl = `/admin/brands/${brand.id}`;
                 $('#editBrandForm').attr('action', actionUrl);
 
-                            // Populate form fields
                             $('#editBrandForm input[name="name"]').val(brand.name);
                             $('#editBrandForm input[name="slug"]').val(brand.slug);
                             $('#editBrandForm textarea[name="description"]').val(brand.description);
@@ -155,7 +138,6 @@ $(document).ready(function () {
                             $('#editBrandForm select[name="status"]').val(brand.status);
                             $('#editBrandForm input[name="sort_order"]').val(brand.sort_order);
 
-                // Preview logo
                 if (brand.logo) {
                     $('#editBrandLogoPreview')
                         .attr('src', '/storage/' + brand.logo)
@@ -165,7 +147,6 @@ $(document).ready(function () {
                     $('#editBrandLogoPreview').addClass('d-none').hide();
                 }
 
-                // Show modal
                 $('#editBrandModal').modal('show');
             },
             error: function (xhr) {
@@ -179,24 +160,17 @@ $(document).ready(function () {
 $(document).ready(function () {
     $(document).on('change', '.toggle-brand-status', function (e) {
         e.preventDefault();
-
         const checkbox = $(this);
         const isChecked = checkbox.is(':checked');
         const status = isChecked ? 1 : 0;
         const brandId = checkbox.data('id');
         const $badge = checkbox.closest('td').find('.status-badge');
-
-        // Confirmation Alert
         const confirmChange = confirm("Are you sure you want to change the brand status?");
-
         if (!confirmChange) {
-            checkbox.prop('checked', !isChecked); // revert back
+            checkbox.prop('checked', !isChecked); 
             return;
         }
-
-        // Proceed with AJAX
         checkbox.prop('disabled', true);
-
         $.ajax({
             url: "<?php echo e(route('admin.brands.toggleStatus')); ?>",
             method: "POST",
@@ -212,12 +186,12 @@ $(document).ready(function () {
                         .addClass(status ? 'bg-success' : 'bg-danger')
                         .text(status ? 'Active' : 'Inactive');
                 } else {
-                    checkbox.prop('checked', !isChecked); // revert toggle
+                    checkbox.prop('checked', !isChecked); 
                     alert("Failed to update status.");
                 }
             },
             error: function () {
-                checkbox.prop('checked', !isChecked); // revert toggle
+                checkbox.prop('checked', !isChecked); 
                 alert("Error occurred while updating status.");
             },
             complete: function () {
@@ -232,7 +206,7 @@ $(document).ready(function () {
         var alert = document.getElementById('success-alert');
         if (alert) {
             alert.classList.add('fade-out');
-            setTimeout(() => alert.style.display = 'none', 500); // wait for fade out
+            setTimeout(() => alert.style.display = 'none', 500);
         }
     }, 2000);
 </script>

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ProductPrice extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'product_id',
         'min_price',
@@ -15,12 +16,17 @@ class ProductPrice extends Model
         'discount_percent',
         'final_price',
         'currency',
+        'status', // Add status to fillable
     ];
 
-    // Add scope to get latest price
     public function scopeLatest($query)
     {
         return $query->orderBy('created_at', 'desc');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 
     public function product()

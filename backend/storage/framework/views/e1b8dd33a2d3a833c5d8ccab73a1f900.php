@@ -80,22 +80,13 @@ unset($__errorArgs, $__bag); ?>
 
 <div class="mb-3">
     <label class="form-label">Category <span class="text-danger">*</span></label>
-    <select name="category_id" class="form-control <?php $__errorArgs = ['category_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" required>
-        <option value="">-- Select Category --</option>
-        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <option value="<?php echo e($cat->id); ?>" <?php echo e(old('category_id') == $cat->id ? 'selected' : ''); ?>>
-                <?php echo e($cat->name); ?>
+   <select name="category_id" id="edit-category" class="form-control">
+    <option value="">Select Category</option>
+    <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <option value="<?php echo e($category->id); ?>"><?php echo e($category->name); ?></option>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+</select>
 
-            </option>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-    </select>
     <?php $__errorArgs = ['category_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -108,22 +99,13 @@ unset($__errorArgs, $__bag); ?>
 
 <div class="mb-3">
     <label class="form-label">Brand <span class="text-danger">*</span></label>
-    <select name="brand_id" class="form-control <?php $__errorArgs = ['brand_id'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" required>
-        <option value="">-- Select Brand --</option>
-        <?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <option value="<?php echo e($brand->id); ?>" <?php echo e(old('brand_id') == $brand->id ? 'selected' : ''); ?>>
-                <?php echo e($brand->name); ?>
-
-            </option>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-    </select>
+   <!-- Brand Dropdown -->
+<select name="brand_id" id="brand" class="form-control" required>
+    <option value="">Select Brand</option>
+    <?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <option value="<?php echo e($brand->id); ?>"><?php echo e($brand->name); ?></option>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+</select>
     <?php $__errorArgs = ['brand_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

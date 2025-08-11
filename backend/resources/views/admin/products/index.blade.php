@@ -245,8 +245,6 @@
                 });
             }
         }
-
-
     </script>
 
 @endsection

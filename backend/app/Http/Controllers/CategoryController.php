@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\Storage;
 class CategoryController extends Controller
 {
     public function index()
+
     {
+        $categories = Category::where('status', 1)
+    ->whereNull('deleted_at')
+    ->get();
         $categories = Category::withTrashed()->get();
          return view('admin.categories.index', compact('categories'));
     }

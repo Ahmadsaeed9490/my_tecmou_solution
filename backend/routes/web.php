@@ -68,6 +68,14 @@ Route::middleware('auth')->group(function () {
         });
 
         // Product Prices
+  // Product Price Toggle Status Route
+Route::post('/product-prices/toggle-status', [ProductPriceController::class, 'toggleStatus'])
+    ->name('product-prices.toggleStatus');
+
+// Product Price Sync Status Route
+Route::post('/product-prices/sync-status', [ProductPriceController::class, 'syncAllPricesStatus'])
+    ->name('product-prices.syncStatus');
+Route::resource('product-prices', ProductPriceController::class);
         Route::prefix('product-prices')->name('product-prices.')->group(function () {
             Route::get('/', [ProductPriceController::class, 'index'])->name('index');
             Route::get('/create', [ProductPriceController::class, 'create'])->name('create');

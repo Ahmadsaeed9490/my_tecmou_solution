@@ -10,10 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        // Pehle table create karo
         Schema::create('product_prices', function (Blueprint $table) {
-            $table->id(); // Default primary key
-            $table->unsignedBigInteger('product_id')->index(); // allow duplicates
+            $table->id(); // Primary key
+            $table->unsignedBigInteger('product_id')->index();
             $table->decimal('min_price', 10, 2);
             $table->decimal('max_price', 10, 2);
             $table->decimal('discount_percent', 5, 2);
@@ -22,20 +21,25 @@ return new class extends Migration {
             $table->timestamps();
             $table->softDeletes();
 
-            // Foreign key
-            $table->foreign('product_id')
-                  ->references('id')
-                  ->on('products')
-                  ->onDelete('cascade');
+    {
+        // Add the 'status' column only if it does not exist
+        if (!Schema::hasColumn('product_prices', 'status')) {
+            Schema::table('product_prices', function (Blueprint $table) {
+                $table->boolean('status')
+                      ->default(1) // 1 = active, 0 = inactive
+                      ->after('currency');
+            });
+        }
+    }
         });
 
-        // Fir index drop karo (agar pehle se unique constraint hoga)
+        // Optional: drop unique constraint if it exists from old versions
         if (Schema::hasTable('product_prices')) {
             Schema::table('product_prices', function (Blueprint $table) {
                 try {
                     $table->dropUnique('product_prices_product_id_unique');
                 } catch (\Exception $e) {
-                    // Agar index nahi mila to error ignore karega
+                    // Ignore if index not found
                 }
             });
         }
@@ -44,8 +48,14 @@ return new class extends Migration {
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+      public function down(): void
     {
-        Schema::dropIfExists('product_prices');
+        // Remove the column if it exists
+        if (Schema::hasColumn('product_prices', 'status')) {
+            Schema::table('product_prices', function (Blueprint $table) {
+                $table->dropColumn('status');
+            });
+        }
     }
 };
+
